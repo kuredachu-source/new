@@ -12747,10 +12747,10 @@
     }
   });
 
-  // home/claude/build_tmp/main_fixed.jsx
+  // home/claude/build_tmp/main_v3.jsx
   var import_client = __toESM(require_client());
 
-  // home/claude/build_tmp/App_fixed.jsx
+  // home/claude/build_tmp/App_v3.jsx
   var import_react3 = __toESM(require_react());
   var import_react4 = __toESM(require_react());
 
@@ -12953,8 +12953,104 @@
     return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "line", "attr": { "x1": "19", "y1": "12", "x2": "5", "y2": "12" }, "child": [] }, { "tag": "polyline", "attr": { "points": "12 19 5 12 12 5" }, "child": [] }] })(props);
   }
 
-  // home/claude/build_tmp/App_fixed.jsx
+  // home/claude/build_tmp/App_v3.jsx
   var import_jsx_runtime = __toESM(require_jsx_runtime());
+  var FB_CONFIG_KEY = "elga_fb_url";
+  function fbWrite(url, path, data) {
+    return fetch(`${url}/${path}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }).catch(() => {
+    });
+  }
+  function fbRead(url, path) {
+    return fetch(`${url}/${path}.json`).then((r) => r.json()).catch(() => null);
+  }
+  function fbDelete(url, path) {
+    return fetch(`${url}/${path}.json`, { method: "DELETE" }).catch(() => {
+    });
+  }
+  function fbStream(url, path, onData) {
+    if (!url || typeof EventSource === "undefined") return () => {
+    };
+    const es = new EventSource(`${url}/${path}.json`);
+    es.addEventListener("put", (e) => {
+      try {
+        onData(JSON.parse(e.data).data);
+      } catch {
+      }
+    });
+    es.addEventListener("patch", (e) => {
+      try {
+        onData(JSON.parse(e.data).data, true);
+      } catch {
+      }
+    });
+    es.onerror = () => {
+    };
+    return () => es.close();
+  }
+  function FirebaseSetup({ onSave, T }) {
+    const [url, setUrl] = (0, import_react3.useState)("");
+    const [testing, setTesting] = (0, import_react3.useState)(false);
+    const [status, setStatus] = (0, import_react3.useState)(null);
+    async function test() {
+      setTesting(true);
+      setStatus(null);
+      const clean = url.trim().replace(/\/$/, "");
+      try {
+        const r = await fetch(`${clean}/ping.json`, { method: "PUT", body: '"ok"' });
+        if (r.ok) {
+          setStatus("success");
+          setTimeout(() => onSave(clean), 800);
+        } else setStatus("error");
+      } catch {
+        setStatus("error");
+      }
+      setTesting(false);
+    }
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "radial-gradient(ellipse at 50% 30%,#3b1e07,#1c0e05 45%,#120803)", padding: "2rem", textAlign: "center" }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { fontSize: "3rem", marginBottom: "1.5rem" }, children: "\u{1F525}" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { style: { fontFamily: "Georgia,serif", color: "#fdf3df", fontSize: "1.75rem", marginBottom: ".5rem" }, children: "Connect Firebase" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: { color: "rgba(253,243,223,.55)", fontSize: ".875rem", maxWidth: "22rem", lineHeight: 1.7, marginBottom: "2rem" }, children: "To sync orders between customer phones and your staff terminal in real-time, connect a free Firebase Realtime Database." }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { background: "rgba(255,255,255,.05)", border: "1px solid rgba(200,137,26,.3)", borderRadius: "1rem", padding: "1.5rem", width: "100%", maxWidth: "26rem", textAlign: "left" }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: { color: "#c8891a", fontWeight: 700, fontSize: ".75rem", letterSpacing: ".1em", textTransform: "uppercase", marginBottom: ".75rem" }, children: "Steps" }),
+        [
+          "Go to console.firebase.google.com",
+          "Create a project \u2192 Build \u2192 Realtime Database",
+          "Create database \u2192 Start in test mode",
+          "Copy the URL (looks like https://xxx.firebaseio.com)",
+          "Paste it below and click Connect"
+        ].map((s, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "flex", gap: ".75rem", alignItems: "flex-start", marginBottom: ".625rem" }, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { background: "#e7b008", color: "#26170d", borderRadius: "50%", width: "1.25rem", height: "1.25rem", display: "flex", alignItems: "center", justifyContent: "center", fontSize: ".625rem", fontWeight: 700, flexShrink: 0, marginTop: ".1rem" }, children: i + 1 }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { color: "rgba(253,243,223,.75)", fontSize: ".8125rem", lineHeight: 1.5 }, children: s })
+        ] }, i))
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "flex", gap: ".75rem", marginTop: "1.5rem", width: "100%", maxWidth: "26rem" }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+          "input",
+          {
+            value: url,
+            onChange: (e) => setUrl(e.target.value),
+            placeholder: "https://your-app-default-rtdb.firebaseio.com",
+            style: { flex: 1, background: "rgba(255,255,255,.08)", border: "1px solid rgba(200,137,26,.35)", borderRadius: ".75rem", color: "#fdf3df", fontSize: ".8125rem", padding: ".75rem 1rem", outline: "none" }
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+          "button",
+          {
+            onClick: test,
+            disabled: !url.trim() || testing,
+            style: { background: status === "success" ? "#16a34a" : "linear-gradient(135deg,#e7b008,#c8891a)", color: status === "success" ? "#fff" : "#26170d", border: "none", borderRadius: ".75rem", padding: ".75rem 1.25rem", fontWeight: 700, fontSize: ".875rem", cursor: "pointer", whiteSpace: "nowrap", opacity: !url.trim() || testing ? 0.5 : 1 },
+            children: testing ? "Testing\u2026" : status === "success" ? "\u2713 Connected!" : "Connect"
+          }
+        )
+      ] }),
+      status === "error" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: { color: "#ef4343", fontSize: ".8125rem", marginTop: ".75rem" }, children: "Could not connect. Check the URL and database rules (must allow read/write)." }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => onSave(null), style: { background: "transparent", border: "none", color: "rgba(253,243,223,.3)", fontSize: ".75rem", marginTop: "1.5rem", cursor: "pointer", textDecoration: "underline" }, children: "Skip \u2014 work offline (orders won't sync between devices)" })
+    ] });
+  }
   var ErrorBoundary = class extends import_react4.default.Component {
     constructor(props) {
       super(props);
@@ -13668,7 +13764,22 @@
     const [cartOpen, setCartOpen] = (0, import_react3.useState)(false);
     const [step, setStep] = (0, import_react3.useState)("cart");
     const [payment, setPayment] = (0, import_react3.useState)(null);
-    const [lastOrderId, setLastOrderId] = (0, import_react3.useState)(null);
+    const [dineType, setDineType] = (0, import_react3.useState)(null);
+    const [lastOrderId, setLastOrderId] = (0, import_react3.useState)(() => {
+      try {
+        const v = localStorage.getItem("elga_last_order_" + tableId);
+        return v ? Number(v) : null;
+      } catch {
+        return null;
+      }
+    });
+    const persistOrderId = (0, import_react3.useCallback)((id) => {
+      setLastOrderId(id);
+      try {
+        localStorage.setItem("elga_last_order_" + tableId, String(id));
+      } catch {
+      }
+    }, [tableId]);
     const [sentimentOpen, setSentimentOpen] = (0, import_react3.useState)(false);
     const ratedOrders = (0, import_react3.useRef)(/* @__PURE__ */ new Set());
     (0, import_react3.useEffect)(() => {
@@ -13707,10 +13818,11 @@
     const cartTotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
     const suggestion = (0, import_react3.useMemo)(() => cart.length > 0 ? computeSuggestion(cart, menuItems) : null, [cart, menuItems]);
     function placeOrder() {
-      const order = onCreateOrder(tableId, cart, payment);
-      setLastOrderId(order.id);
+      const order = onCreateOrder(tableId, cart, payment, dineType || "Dine In");
+      persistOrderId(order.id);
       setCart([]);
       setPayment(null);
+      setDineType(null);
       setStep("cart");
       setCartOpen(false);
     }
@@ -13806,7 +13918,7 @@
         visible.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "col-span-full text-center py-10 text-sm", style: { color: T.mutedFg }, children: "No items available in this category right now." })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("footer", { className: "px-4 py-6 text-center text-xs", style: { color: T.mutedFg }, children: "\xA9 ELGA CAFE \xB7 Dire Dawa, Ethiopia" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Modal, { T, open: cartOpen, onClose: () => setCartOpen(false), title: step === "cart" ? "Your Order" : step === "payment" ? "Choose Payment" : "Confirm Order", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Modal, { T, open: cartOpen, onClose: () => setCartOpen(false), title: step === "cart" ? "Your Order" : step === "payment" ? "Choose Payment" : step === "dinetype" ? "How will you dine?" : "Confirm Order", children: [
         step === "cart" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex flex-col gap-4", children: cart.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-center py-8 text-sm", style: { color: T.mutedFg }, children: "Your cart is empty" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "space-y-2", children: cart.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-3 rounded-xl p-3", style: { background: T.secondary }, children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex-1", children: [
@@ -13859,8 +13971,29 @@
           ] }, pm.id)) }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex gap-3", children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, variant: "outline", className: "flex-1", onClick: () => setStep("cart"), children: "Back" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, className: "flex-1", onClick: () => setStep("confirm"), children: "Continue" })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, className: "flex-1", onClick: () => setStep("dinetype"), children: "Continue" })
           ] })
+        ] }),
+        step === "dinetype" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-4", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-sm text-center", style: { color: T.mutedFg }, children: "How will you enjoy your order?" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "grid grid-cols-2 gap-3", children: [["\u{1F37D}", "Dine In", "Eat here at the cafe"], ["\u{1F961}", "Takeaway", "Pack it to go"]].map(([emoji, label, sub]) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+            "button",
+            {
+              onClick: () => {
+                setDineType(label);
+                setStep("confirm");
+              },
+              className: "rounded-2xl p-5 flex flex-col items-center gap-2 active:scale-95 transition-transform",
+              style: { background: dineType === label ? T.primary : T.secondary, color: dineType === label ? T.primaryFg : T.fg, border: "2px solid " + (dineType === label ? T.primary : T.border) },
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { fontSize: "2.5rem" }, children: emoji }),
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-bold text-sm", children: label }),
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-xs", style: { color: dineType === label ? T.primaryFg : T.mutedFg }, children: sub })
+              ]
+            },
+            label
+          )) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, variant: "outline", className: "w-full", onClick: () => setStep("payment"), children: "Back" })
         ] }),
         step === "confirm" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-4", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4 space-y-2", style: { background: T.secondary }, children: [
@@ -13889,10 +14022,14 @@
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-xs pt-1", style: { color: T.mutedFg }, children: [
               "Payment: ",
               selectedPmLabel
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-xs", style: { color: T.mutedFg }, children: [
+              "Dine type: ",
+              dineType || "Dine In"
             ] })
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex gap-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, variant: "outline", className: "flex-1", onClick: () => setStep("payment"), children: "Back" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, variant: "outline", className: "flex-1", onClick: () => setStep("dinetype"), children: "Back" }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, className: "flex-1", onClick: placeOrder, children: "Place Order" })
           ] })
         ] })
@@ -13908,75 +14045,110 @@
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(IsraelChat, { T })
     ] });
   }
-  function OrderQueue({ orders, onAdvance, T }) {
+  function OrderQueue({ orders, onAdvance, T, fbConnected = false }) {
+    const [waiterModal, setWaiterModal] = (0, import_react3.useState)(null);
+    const [waiterInput, setWaiterInput] = (0, import_react3.useState)("");
     const [filter, setFilter] = (0, import_react3.useState)("all");
     const counts = { pending: 0, preparing: 0, ready: 0 };
     for (const o of orders) if (counts[o.status] !== void 0) counts[o.status] += 1;
     const filtered = filter === "all" ? orders : orders.filter((o) => o.status === filter);
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "space-y-5", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2 text-sm", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "w-2 h-2 rounded-full animate-pulse", style: { background: "#16a34a" } }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { color: T.mutedFg }, children: "Live \u2014 orders appear instantly" })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-3 gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatCard, { T, label: "Pending", value: counts.pending, icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiClock, { size: 12 }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatCard, { T, label: "Preparing", value: counts.preparing, icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiCoffee, { size: 12 }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatCard, { T, label: "Ready", value: counts.ready, icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiCheck, { size: 12 }) })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex gap-2 flex-wrap", children: [["all", `All (${orders.length})`], ["pending", "Pending"], ["preparing", "Preparing"], ["ready", "Ready"]].map(([id, label]) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: () => setFilter(id), className: "text-xs font-semibold px-3.5 py-1.5 rounded-full flex items-center gap-1.5", style: filter === id ? { background: T.primary, color: T.primaryFg } : { background: T.sidebarAccent, color: T.fg }, children: [
-        id !== "all" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "w-2 h-2 rounded-full", style: { background: STATUS_INFO[id].dot } }),
-        label
-      ] }, id)) }),
-      filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl py-16 flex flex-col items-center gap-2", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiClock, { size: 28, style: { color: T.mutedFg, opacity: 0.5 } }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "font-semibold text-sm", children: "No orders yet" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs", style: { color: T.mutedFg }, children: "Waiting for new orders\u2026" })
-      ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "space-y-3", children: [...filtered].reverse().map((o) => {
-        const idx = STATUS_FLOW.indexOf(o.status);
-        const next = STATUS_FLOW[idx + 1];
-        return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between mb-2", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-              /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "font-semibold text-sm", children: [
-                "Order #",
-                o.id,
-                " \xB7 Table ",
-                o.tableId
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "space-y-5", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2 text-sm", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "w-2 h-2 rounded-full animate-pulse", style: { background: "#16a34a" } }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { color: T.mutedFg }, children: fbConnected ? "Live sync \u2014 orders from all customer phones appear here instantly" : "Offline mode \u2014 connect Firebase to receive orders from customer phones" })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-3 gap-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatCard, { T, label: "Pending", value: counts.pending, icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiClock, { size: 12 }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatCard, { T, label: "Preparing", value: counts.preparing, icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiCoffee, { size: 12 }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatCard, { T, label: "Ready", value: counts.ready, icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiCheck, { size: 12 }) })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex gap-2 flex-wrap", children: [["all", `All (${orders.length})`], ["pending", "Pending"], ["preparing", "Preparing"], ["ready", "Ready"]].map(([id, label]) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: () => setFilter(id), className: "text-xs font-semibold px-3.5 py-1.5 rounded-full flex items-center gap-1.5", style: filter === id ? { background: T.primary, color: T.primaryFg } : { background: T.sidebarAccent, color: T.fg }, children: [
+          id !== "all" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "w-2 h-2 rounded-full", style: { background: STATUS_INFO[id].dot } }),
+          label
+        ] }, id)) }),
+        filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl py-16 flex flex-col items-center gap-2", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiClock, { size: 28, style: { color: T.mutedFg, opacity: 0.5 } }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "font-semibold text-sm", children: "No orders yet" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs", style: { color: T.mutedFg }, children: "Waiting for new orders\u2026" })
+        ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "space-y-3", children: [...filtered].reverse().map((o) => {
+          const idx = STATUS_FLOW.indexOf(o.status);
+          const next = STATUS_FLOW[idx + 1];
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between mb-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+                /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "font-semibold text-sm", children: [
+                  "Order #",
+                  o.id,
+                  " \xB7 Table ",
+                  o.tableId
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-xs", style: { color: T.mutedFg }, children: [
+                  formatEthTime(new Date(o.createdAt)),
+                  " \xB7 ",
+                  o.paymentMethod || "no payment selected"
+                ] })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-xs", style: { color: T.mutedFg }, children: [
-                formatEthTime(new Date(o.createdAt)),
-                " \xB7 ",
-                o.paymentMethod || "no payment selected"
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-xs font-semibold px-2 py-0.5 rounded-full text-white", style: { background: STATUS_INFO[o.status].dot }, children: STATUS_INFO[o.status].label })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "text-sm space-y-0.5 mb-3", children: o.items.map((it) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex justify-between", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+                it.nameEn,
+                " x",
+                it.quantity
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { style: { color: T.mutedFg }, children: [
+                "ETB ",
+                (it.unitPrice * it.quantity).toFixed(0)
               ] })
-            ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-xs font-semibold px-2 py-0.5 rounded-full text-white", style: { background: STATUS_INFO[o.status].dot }, children: STATUS_INFO[o.status].label })
-          ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "text-sm space-y-0.5 mb-3", children: o.items.map((it) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex justify-between", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-              it.nameEn,
-              " x",
-              it.quantity
-            ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { style: { color: T.mutedFg }, children: [
-              "ETB ",
-              (it.unitPrice * it.quantity).toFixed(0)
+            ] }, it.menuItemId)) }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-bold text-sm", style: { color: T.accent }, children: [
+                "ETB ",
+                o.totalAmount.toFixed(0)
+              ] }),
+              next ? next === "served" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, variant: "accent", onClick: () => {
+                setWaiterInput("");
+                setWaiterModal(o.id);
+              }, children: "\u{1F64B} Assign Waiter & Serve" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, { T, variant: "accent", onClick: () => onAdvance(o.id), children: [
+                "Mark ",
+                STATUS_INFO[next].label
+              ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "text-xs flex items-center gap-1", style: { color: T.mutedFg }, children: [
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiCheck, { size: 14 }),
+                " ",
+                o.waiter ? `Served by ${o.waiter}` : "Complete"
+              ] })
             ] })
-          ] }, it.menuItemId)) }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-bold text-sm", style: { color: T.accent }, children: [
-              "ETB ",
-              o.totalAmount.toFixed(0)
-            ] }),
-            next ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, { T, variant: "accent", onClick: () => onAdvance(o.id), children: [
-              "Mark ",
-              STATUS_INFO[next].label
-            ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "text-xs flex items-center gap-1", style: { color: T.mutedFg }, children: [
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiCheck, { size: 14 }),
-              " Complete"
-            ] })
-          ] })
-        ] }, o.id);
-      }) })
+          ] }, o.id);
+        }) })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Modal, { T, open: !!waiterModal, onClose: () => setWaiterModal(null), title: "Assign Waiter", maxW: "max-w-sm", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-sm", style: { color: T.mutedFg }, children: "Enter the waiter number or name who is taking this order." }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+          "input",
+          {
+            value: waiterInput,
+            onChange: (e) => setWaiterInput(e.target.value),
+            placeholder: "e.g. Waiter 3 / Sara",
+            autoFocus: true,
+            className: "w-full text-sm rounded-xl px-4 py-3",
+            style: { background: T.secondary, border: "1px solid " + T.border, color: T.fg },
+            onKeyDown: (e) => {
+              if (e.key === "Enter" && waiterInput.trim()) {
+                onAdvance(waiterModal, waiterInput.trim());
+                setWaiterModal(null);
+              }
+            }
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex gap-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, variant: "outline", className: "flex-1", onClick: () => setWaiterModal(null), children: "Cancel" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, className: "flex-1", disabled: !waiterInput.trim(), onClick: () => {
+            onAdvance(waiterModal, waiterInput.trim());
+            setWaiterModal(null);
+          }, children: "Confirm & Serve" })
+        ] })
+      ] }) })
     ] });
   }
   function AnalyticsSection({ icon, title, children, T }) {
@@ -14494,11 +14666,199 @@
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ConfirmModal, { T, open: !!deleting, onClose: () => setDeleting(null), title: "Remove this payment method?", message: `"${deleting?.name}" will no longer be offered at checkout.`, onConfirm: () => setDraft((d) => d.filter((p) => p.id !== deleting.id)) })
     ] });
   }
-  function StaffTerminal({ menuItems, orders, sentimentLogs, paymentMethods, dark, onToggleDark, onBack, handlers, T }) {
+  function ReportsDashboard({ orders, menuItems, T }) {
+    const [dateFrom, setDateFrom] = (0, import_react3.useState)("");
+    const [dateTo, setDateTo] = (0, import_react3.useState)("");
+    const [filterStatus, setFilterStatus] = (0, import_react3.useState)("all");
+    const [filterDine, setFilterDine] = (0, import_react3.useState)("all");
+    const rows = (0, import_react3.useMemo)(() => {
+      const result = [];
+      for (const o of orders) {
+        const dt = new Date(o.createdAt);
+        const dateStr = dt.toLocaleDateString("en-GB", { timeZone: "Africa/Addis_Ababa" });
+        const timeStr = dt.toLocaleTimeString("en-GB", { timeZone: "Africa/Addis_Ababa", hour: "2-digit", minute: "2-digit" });
+        for (const it of o.items) {
+          result.push({
+            date: dateStr,
+            time: timeStr,
+            waiter: o.waiter || "\u2014",
+            tableOrder: o.tableId,
+            dineType: o.dineType || "Dine In",
+            item: it.nameEn,
+            category: it.category || menuItems.find((m) => m.id === it.menuItemId)?.category || "\u2014",
+            qty: it.quantity,
+            unitPrice: it.unitPrice,
+            totalEtb: it.unitPrice * it.quantity,
+            status: o.status,
+            paymentMethod: o.paymentMethod || "\u2014",
+            createdAt: o.createdAt
+          });
+        }
+      }
+      return result;
+    }, [orders, menuItems]);
+    const filtered = (0, import_react3.useMemo)(() => rows.filter((r) => {
+      if (filterStatus !== "all" && r.status !== filterStatus) return false;
+      if (filterDine !== "all" && r.dineType !== filterDine) return false;
+      if (dateFrom && r.createdAt < dateFrom) return false;
+      if (dateTo && r.createdAt > dateTo + "T23:59:59") return false;
+      return true;
+    }), [rows, filterStatus, filterDine, dateFrom, dateTo]);
+    const totalRevenue = filtered.reduce((s, r) => s + r.totalEtb, 0);
+    const totalQty = filtered.reduce((s, r) => s + r.qty, 0);
+    function exportCSV() {
+      const headers = ["date", "time", "waiter", "table/order", "dine_type", "item", "category", "qty", "unit_price_etb", "total_etb", "status", "payment_method"];
+      const csvRows = [headers.join(",")];
+      for (const r of filtered) {
+        csvRows.push([r.date, r.time, r.waiter, r.tableOrder, r.dineType, `"${r.item}"`, r.category, r.qty, r.unitPrice, r.totalEtb, r.status, `"${r.paymentMethod}"`].join(","));
+      }
+      const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `elga-cafe-report-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.csv`;
+      a.click();
+    }
+    const TH = ({ children, right }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { style: { padding: "0.625rem 0.75rem", textAlign: right ? "right" : "left", fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#c8891a", whiteSpace: "nowrap", borderBottom: "2px solid " + T.border, background: T.secondary }, children });
+    const TD = ({ children, right, mono, accent }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { style: { padding: "0.5rem 0.75rem", textAlign: right ? "right" : "left", fontSize: "0.8125rem", fontFamily: mono ? "monospace" : "inherit", color: accent ? T.accent : T.fg, whiteSpace: "nowrap", borderBottom: "1px solid " + T.border }, children });
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "space-y-5", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "grid grid-cols-2 sm:grid-cols-4 gap-3", children: [
+        { label: "Total Revenue", value: `ETB ${totalRevenue.toFixed(0)}`, accent: true },
+        { label: "Items Sold", value: totalQty },
+        { label: "Orders", value: new Set(orders.map((o) => o.id)).size },
+        { label: "Report Rows", value: filtered.length }
+      ].map(({ label, value, accent }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4", style: { background: T.card, border: "1px solid " + T.border }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs uppercase tracking-wide", style: { color: T.mutedFg }, children: label }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-2xl font-bold mt-1", style: { fontFamily: SERIF, color: accent ? T.accent : T.fg }, children: value })
+      ] }, label)) }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4 flex flex-wrap gap-3 items-end", style: { background: T.card, border: "1px solid " + T.border }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-1", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", { className: "text-xs font-semibold uppercase tracking-wide", style: { color: T.mutedFg }, children: "From" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            "input",
+            {
+              type: "date",
+              value: dateFrom,
+              onChange: (e) => setDateFrom(e.target.value),
+              className: "text-sm rounded-lg px-3 py-1.5",
+              style: { background: T.secondary, border: "1px solid " + T.border, color: T.fg }
+            }
+          )
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-1", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", { className: "text-xs font-semibold uppercase tracking-wide", style: { color: T.mutedFg }, children: "To" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            "input",
+            {
+              type: "date",
+              value: dateTo,
+              onChange: (e) => setDateTo(e.target.value),
+              className: "text-sm rounded-lg px-3 py-1.5",
+              style: { background: T.secondary, border: "1px solid " + T.border, color: T.fg }
+            }
+          )
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-1", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", { className: "text-xs font-semibold uppercase tracking-wide", style: { color: T.mutedFg }, children: "Status" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+            "select",
+            {
+              value: filterStatus,
+              onChange: (e) => setFilterStatus(e.target.value),
+              className: "text-sm rounded-lg px-3 py-1.5",
+              style: { background: T.secondary, border: "1px solid " + T.border, color: T.fg },
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "all", children: "All" }),
+                STATUS_FLOW.map((s) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: s, children: STATUS_INFO[s].label }, s))
+              ]
+            }
+          )
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-1", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", { className: "text-xs font-semibold uppercase tracking-wide", style: { color: T.mutedFg }, children: "Dine Type" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+            "select",
+            {
+              value: filterDine,
+              onChange: (e) => setFilterDine(e.target.value),
+              className: "text-sm rounded-lg px-3 py-1.5",
+              style: { background: T.secondary, border: "1px solid " + T.border, color: T.fg },
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "all", children: "All" }),
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "Dine In", children: "\u{1F37D} Dine In" }),
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "Takeaway", children: "\u{1F961} Takeaway" })
+              ]
+            }
+          )
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex gap-2 ml-auto", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, variant: "ghost", onClick: () => {
+            setDateFrom("");
+            setDateTo("");
+            setFilterStatus("all");
+            setFilterDine("all");
+          }, children: "Clear" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, { T, onClick: exportCSV, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiDownload, { size: 14 }),
+            " Export CSV"
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "rounded-xl overflow-hidden", style: { border: "1px solid " + T.border }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { overflowX: "auto" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { style: { width: "100%", borderCollapse: "collapse" }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { children: "Date" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { children: "Time" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { children: "Waiter" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { children: "Table / Order" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { children: "Dine Type" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { children: "Item" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { children: "Category" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { right: true, children: "Qty" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { right: true, children: "Unit Price ETB" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { right: true, children: "Total ETB" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { children: "Status" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { children: "Payment Method" })
+        ] }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { colSpan: 12, style: { textAlign: "center", padding: "3rem", color: T.mutedFg, fontSize: "0.875rem" }, children: "No data for selected filters" }) }) : filtered.map((r, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { style: { background: i % 2 === 0 ? T.card : T.bg }, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TD, { mono: true, children: r.date }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TD, { mono: true, children: r.time }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TD, { children: r.waiter }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TD, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold", children: r.tableOrder }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TD, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { fontSize: "1rem" }, children: r.dineType === "Takeaway" ? "\u{1F961}" : "\u{1F37D}" }),
+            " ",
+            r.dineType
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TD, { children: r.item }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TD, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-xs font-semibold px-2 py-0.5 rounded-full", style: { background: T.secondary, color: T.mutedFg }, children: r.category }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TD, { right: true, mono: true, children: r.qty }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TD, { right: true, mono: true, accent: true, children: r.unitPrice.toFixed(0) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TD, { right: true, mono: true, accent: true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: r.totalEtb.toFixed(0) }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TD, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-xs font-semibold px-2 py-0.5 rounded-full text-white", style: { background: STATUS_INFO[r.status]?.dot || T.mutedFg }, children: STATUS_INFO[r.status]?.label || r.status }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TD, { children: r.paymentMethod })
+        ] }, i)) }),
+        filtered.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tfoot", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { style: { background: T.secondary }, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { colSpan: 7, style: { padding: "0.625rem 0.75rem", fontWeight: 700, fontSize: "0.8125rem", color: T.mutedFg }, children: [
+            "TOTAL (",
+            filtered.length,
+            " rows)"
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { style: { padding: "0.625rem 0.75rem", textAlign: "right", fontWeight: 700, fontSize: "0.8125rem", color: T.fg }, children: totalQty }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {}),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { style: { padding: "0.625rem 0.75rem", textAlign: "right", fontWeight: 800, fontSize: "0.9rem", color: T.accent }, children: [
+            "ETB ",
+            totalRevenue.toFixed(0)
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { colSpan: 2 })
+        ] }) })
+      ] }) }) })
+    ] });
+  }
+  function StaffTerminal({ menuItems, orders, sentimentLogs, paymentMethods, dark, onToggleDark, onBack, handlers, T, fbConnected, onReconfigFb }) {
     const [tab, setTab] = (0, import_react3.useState)("orders");
     const TABS = [
       { id: "orders", label: "Order Queue", icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiList, { size: 17 }) },
       { id: "analytics", label: "Analytics", icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiBarChart2, { size: 17 }) },
+      { id: "reports", label: "Reports", icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiTrendingUp, { size: 17 }) },
       { id: "menu", label: "Menu Edit", icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiTool, { size: 17 }) },
       { id: "sentiment", label: "Sentiment", icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiMessageSquare, { size: 17 }) },
       { id: "qr", label: "QR Generator", icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiGrid, { size: 17 }) },
@@ -14506,11 +14866,15 @@
     ];
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "min-h-screen flex", style: { background: T.bg, color: T.fg, fontFamily: SANS }, children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", { className: "w-56 shrink-0 hidden md:flex flex-col", style: { background: T.sidebar, borderRight: `1px solid ${T.border}` }, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: onBack, className: "px-5 py-5 text-left", style: { borderBottom: `1px solid ${T.border}` }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: onBack, className: "px-5 py-5 text-left", style: { borderBottom: "1px solid " + T.border }, children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { className: "font-bold text-lg", style: { fontFamily: SERIF }, children: "ELGA CAFE" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-[10px] font-semibold tracking-[0.3em] mt-0.5 uppercase", style: { color: T.mutedFg }, children: "Staff Terminal" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "flex", alignItems: "center", gap: ".375rem", marginTop: ".25rem" }, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { width: 6, height: 6, borderRadius: "50%", background: fbConnected ? "#16a34a" : "#d97706", display: "inline-block" } }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-[10px] font-semibold tracking-widest uppercase", style: { color: T.mutedFg }, children: fbConnected ? "Live Sync ON" : "Offline" }),
+            !fbConnected && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: onReconfigFb, style: { color: "#c8891a", fontSize: "0.6rem", textDecoration: "underline", background: "none", border: "none", cursor: "pointer" }, children: "Connect" })
+          ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", { className: "flex-1 px-2 py-3 space-y-0.5", children: TABS.map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: () => setTab(t.id), className: "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all", style: tab === t.id ? { background: T.primary, color: T.primaryFg } : { color: T.mutedFg }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", { className: "flex-1 px-2 py-3 space-y-0.5", children: TABS.map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: () => setTab(t.id), className: "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all", style: tab === t.id ? { background: T.primary, color: T.primaryFg, border: "1.5px solid " + T.primary } : { color: T.fg, border: "1.5px solid " + T.border, background: T.card }, children: [
           t.icon,
           t.label
         ] }, t.id)) }),
@@ -14537,21 +14901,107 @@
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { className: "font-bold text-2xl", style: { fontFamily: SERIF }, children: TABS.find((t) => t.id === tab)?.label }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs mt-0.5", style: { color: T.mutedFg }, children: "ELGA CAFE \xB7 Dire Dawa, Ethiopia" })
         ] }),
-        tab === "orders" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OrderQueue, { T, orders, onAdvance: handlers.advanceOrder }),
+        tab === "orders" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OrderQueue, { T, orders, onAdvance: handlers.advanceOrder, fbConnected }),
         tab === "analytics" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnalyticsHub, { T, orders, sentimentLogs, menuItems, onClearPeriod: handlers.clearPeriod }),
         tab === "menu" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MenuEdit, { T, menuItems, onToggle: handlers.toggleAvailability, onUpdatePrice: handlers.updatePrice, onSave: handlers.saveMenuItem, onDelete: handlers.deleteMenuItem }),
         tab === "sentiment" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SentimentLogs, { T, logs: sentimentLogs, onClear: handlers.clearSentiment }),
+        tab === "reports" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReportsDashboard, { T, orders, menuItems }),
         tab === "qr" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QRGenerator, { T }),
         tab === "settings" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SettingsPage, { T, paymentMethods, onSave: handlers.savePaymentMethods })
       ] }) })
     ] });
   }
   function AppInner() {
+    const [fbUrl, setFbUrl] = (0, import_react3.useState)(() => {
+      try {
+        return localStorage.getItem(FB_CONFIG_KEY) || "";
+      } catch {
+        return "";
+      }
+    });
+    const [fbReady, setFbReady] = (0, import_react3.useState)(false);
+    const [showFbSetup, setShowFbSetup] = (0, import_react3.useState)(() => {
+      try {
+        return !localStorage.getItem(FB_CONFIG_KEY);
+      } catch {
+        return false;
+      }
+    });
+    function saveFbConfig(url) {
+      try {
+        if (url) localStorage.setItem(FB_CONFIG_KEY, url);
+      } catch {
+      }
+      setFbUrl(url || "");
+      setShowFbSetup(false);
+    }
     const [menuItems, setMenuItems] = (0, import_react3.useState)(SEED_MENU);
     const [orders, setOrders] = (0, import_react3.useState)([]);
     const [sentimentLogs, setSentimentLogs] = (0, import_react3.useState)([]);
     const [paymentMethods, setPaymentMethods] = (0, import_react3.useState)(DEFAULT_PAYMENT_METHODS);
     const [dark, setDark] = (0, import_react3.useState)(false);
+    (0, import_react3.useEffect)(() => {
+      if (!fbUrl) {
+        setFbReady(true);
+        return;
+      }
+      Promise.all([
+        fbRead(fbUrl, "menu"),
+        fbRead(fbUrl, "orders"),
+        fbRead(fbUrl, "sentiment"),
+        fbRead(fbUrl, "settings")
+      ]).then(([menuData, ordersData, sentData, settingsData]) => {
+        if (menuData && typeof menuData === "object") {
+          const items = Object.values(menuData).filter(Boolean);
+          if (items.length) setMenuItems(items);
+        }
+        if (ordersData && typeof ordersData === "object") {
+          setOrders(Object.values(ordersData).filter(Boolean).sort((a, b) => a.id - b.id));
+        }
+        if (sentData && typeof sentData === "object") {
+          setSentimentLogs(Object.values(sentData).filter(Boolean));
+        }
+        if (settingsData?.paymentMethods) setPaymentMethods(settingsData.paymentMethods);
+        setFbReady(true);
+      }).catch(() => setFbReady(true));
+    }, [fbUrl]);
+    (0, import_react3.useEffect)(() => {
+      if (!fbUrl) return;
+      return fbStream(fbUrl, "orders", (data, isPatch) => {
+        if (!data) {
+          setOrders([]);
+          return;
+        }
+        if (typeof data !== "object") return;
+        if (isPatch) {
+          setOrders((prev) => {
+            const map = Object.fromEntries(prev.map((o) => [String(o.id), o]));
+            Object.entries(data).forEach(([k, v]) => {
+              if (v) map[k] = v;
+              else delete map[k];
+            });
+            return Object.values(map).filter(Boolean).sort((a, b) => a.id - b.id);
+          });
+        } else {
+          setOrders(Object.values(data).filter(Boolean).sort((a, b) => a.id - b.id));
+        }
+      });
+    }, [fbUrl]);
+    (0, import_react3.useEffect)(() => {
+      if (!fbUrl) return;
+      return fbStream(fbUrl, "menu", (data) => {
+        if (!data || typeof data !== "object") return;
+        const items = Object.values(data).filter(Boolean);
+        if (items.length) setMenuItems(items);
+      });
+    }, [fbUrl]);
+    (0, import_react3.useEffect)(() => {
+      if (!fbUrl) return;
+      return fbStream(fbUrl, "sentiment", (data) => {
+        if (!data || typeof data !== "object") return;
+        setSentimentLogs(Object.values(data).filter(Boolean));
+      });
+    }, [fbUrl]);
     const urlTable = (0, import_react3.useMemo)(() => {
       try {
         return new URLSearchParams(window.location.search).get("table");
@@ -14562,44 +15012,103 @@
     const [view, setView] = (0, import_react3.useState)(urlTable ? "customer" : "landing");
     const [tableId, setTableId] = (0, import_react3.useState)(urlTable || "T1");
     const T = dark ? DARK : LIGHT;
-    const createOrder = (0, import_react3.useCallback)((table, cart, paymentId) => {
+    const createOrder = (0, import_react3.useCallback)((table, cart, paymentId, dineType = "Dine In") => {
       const now = (/* @__PURE__ */ new Date()).toISOString();
       const order = {
         id: nextId(),
         tableId: table,
         status: "pending",
+        dineType,
+        waiter: null,
         totalAmount: cart.reduce((s, i) => s + i.price * i.quantity, 0),
         paymentMethod: [...paymentMethods, CASH_METHOD].find((p) => p.id === paymentId)?.name || null,
         createdAt: now,
         updatedAt: now,
-        items: cart.map((i) => ({ menuItemId: i.menuItemId, nameEn: i.nameEn, nameAm: i.nameAm, quantity: i.quantity, unitPrice: i.price }))
+        items: cart.map((i) => ({ menuItemId: i.menuItemId, nameEn: i.nameEn, nameAm: i.nameAm, category: i.category || "", quantity: i.quantity, unitPrice: i.price }))
       };
       setOrders((o) => [...o, order]);
+      if (fbUrl) fbWrite(fbUrl, `orders/${order.id}`, order);
       return order;
-    }, [paymentMethods]);
+    }, [paymentMethods, fbUrl]);
     const handlers = {
-      advanceOrder: (id) => setOrders((os) => os.map((o) => {
-        if (o.id !== id) return o;
-        const idx = STATUS_FLOW.indexOf(o.status);
-        return { ...o, status: STATUS_FLOW[idx + 1] || o.status, updatedAt: (/* @__PURE__ */ new Date()).toISOString() };
-      })),
-      toggleAvailability: (id) => setMenuItems((items) => items.map((m) => m.id === id ? { ...m, available: !m.available } : m)),
-      updatePrice: (id, price) => setMenuItems((items) => items.map((m) => m.id === id ? { ...m, price } : m)),
+      advanceOrder: (id, waiter) => setOrders((os) => {
+        const next = os.map((o) => {
+          if (o.id !== id) return o;
+          const idx = STATUS_FLOW.indexOf(o.status);
+          const patch = { status: STATUS_FLOW[idx + 1] || o.status, updatedAt: (/* @__PURE__ */ new Date()).toISOString() };
+          if (waiter) patch.waiter = waiter;
+          return { ...o, ...patch };
+        });
+        const updated = next.find((o) => o.id === id);
+        if (fbUrl && updated) fbWrite(fbUrl, `orders/${id}`, updated);
+        return next;
+      }),
+      toggleAvailability: (id) => setMenuItems((items) => {
+        const next = items.map((m) => m.id === id ? { ...m, available: !m.available } : m);
+        if (fbUrl) next.forEach((m) => fbWrite(fbUrl, `menu/${m.id}`, m));
+        return next;
+      }),
+      updatePrice: (id, price) => setMenuItems((items) => {
+        const next = items.map((m) => m.id === id ? { ...m, price } : m);
+        if (fbUrl) {
+          const m = next.find((x) => x.id === id);
+          if (m) fbWrite(fbUrl, `menu/${m.id}`, m);
+        }
+        return next;
+      }),
       saveMenuItem: (id, form) => setMenuItems((items) => {
         const data = { nameEn: form.nameEn, nameAm: form.nameAm || form.nameEn, description: form.description || "", price: Number(form.price) || 0, category: form.category, imageUrl: form.imageUrl || "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400" };
-        if (id) return items.map((m) => m.id === id ? { ...m, ...data } : m);
-        return [...items, { id: nextId(), ...data, available: true }];
+        let next;
+        if (id) {
+          next = items.map((m) => m.id === id ? { ...m, ...data } : m);
+          if (fbUrl) fbWrite(fbUrl, `menu/${id}`, { ...items.find((m) => m.id === id), ...data });
+        } else {
+          const newItem = { id: nextId(), ...data, available: true };
+          next = [...items, newItem];
+          if (fbUrl) fbWrite(fbUrl, `menu/${newItem.id}`, newItem);
+        }
+        return next;
       }),
-      deleteMenuItem: (id) => setMenuItems((items) => items.filter((m) => m.id !== id)),
-      clearSentiment: () => setSentimentLogs([]),
-      clearPeriod: (since) => {
-        setOrders((os) => os.filter((o) => new Date(o.createdAt) < since));
-        setSentimentLogs((s) => s.filter((l) => new Date(l.createdAt) < since));
+      deleteMenuItem: (id) => setMenuItems((items) => {
+        if (fbUrl) fbDelete(fbUrl, `menu/${id}`);
+        return items.filter((m) => m.id !== id);
+      }),
+      clearSentiment: () => {
+        setSentimentLogs([]);
+        if (fbUrl) fbWrite(fbUrl, "sentiment", null);
       },
-      savePaymentMethods: (methods) => setPaymentMethods(methods)
+      clearPeriod: (since) => {
+        setOrders((os) => {
+          const keep = os.filter((o) => new Date(o.createdAt) < since);
+          const remove = os.filter((o) => new Date(o.createdAt) >= since);
+          if (fbUrl) remove.forEach((o) => fbDelete(fbUrl, `orders/${o.id}`));
+          return keep;
+        });
+        setSentimentLogs((s) => {
+          const keep = s.filter((l) => new Date(l.createdAt) < since);
+          const remove = s.filter((l) => new Date(l.createdAt) >= since);
+          if (fbUrl) remove.forEach((l) => fbDelete(fbUrl, `sentiment/${l.id}`));
+          return keep;
+        });
+      },
+      savePaymentMethods: (methods) => {
+        setPaymentMethods(methods);
+        if (fbUrl) fbWrite(fbUrl, "settings/paymentMethods", methods);
+      }
     };
     function addSentiment(emoji, table, orderId) {
-      setSentimentLogs((s) => [...s, { id: nextId(), emoji, tableId: table, orderId, createdAt: (/* @__PURE__ */ new Date()).toISOString() }]);
+      const log = { id: nextId(), emoji, tableId: table, orderId, createdAt: (/* @__PURE__ */ new Date()).toISOString() };
+      setSentimentLogs((s) => [...s, log]);
+      if (fbUrl) fbWrite(fbUrl, `sentiment/${log.id}`, log);
+    }
+    if (showFbSetup) {
+      return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FirebaseSetup, { T, onSave: saveFbConfig });
+    }
+    if (fbUrl && !fbReady) {
+      return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#1e130b", flexDirection: "column", gap: "1rem" }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { fontSize: "3rem" }, children: "\u2615" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: { color: "#c8891a", fontWeight: 700, fontFamily: "Georgia,serif", fontSize: "1.25rem" }, children: "Connecting to Firebase\u2026" })
+      ] });
     }
     if (view === "landing") {
       return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Landing, { T, onEnter: setView });
@@ -14630,7 +15139,9 @@
         dark,
         onToggleDark: () => setDark((d) => !d),
         onBack: () => setView("landing"),
-        handlers
+        handlers,
+        fbConnected: !!fbUrl,
+        onReconfigFb: () => setShowFbSetup(true)
       }
     );
   }
@@ -14638,7 +15149,7 @@
     return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ErrorBoundary, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AppInner, {}) });
   }
 
-  // home/claude/build_tmp/main_fixed.jsx
+  // home/claude/build_tmp/main_v3.jsx
   var import_jsx_runtime2 = __toESM(require_jsx_runtime());
   (0, import_client.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ (0, import_jsx_runtime2.jsx)(App, {}));
 })();
