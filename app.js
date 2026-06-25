@@ -12955,7 +12955,6 @@
 
   // home/claude/build_tmp/App_v3.jsx
   var import_jsx_runtime = __toESM(require_jsx_runtime());
-  var FB_CONFIG_KEY = "elga_fb_url";
   function fbWrite(url, path, data) {
     return fetch(`${url}/${path}.json`, {
       method: "PUT",
@@ -12990,66 +12989,6 @@
     es.onerror = () => {
     };
     return () => es.close();
-  }
-  function FirebaseSetup({ onSave, T }) {
-    const [url, setUrl] = (0, import_react3.useState)("");
-    const [testing, setTesting] = (0, import_react3.useState)(false);
-    const [status, setStatus] = (0, import_react3.useState)(null);
-    async function test() {
-      setTesting(true);
-      setStatus(null);
-      const clean = url.trim().replace(/\/$/, "");
-      try {
-        const r = await fetch(`${clean}/ping.json`, { method: "PUT", body: '"ok"' });
-        if (r.ok) {
-          setStatus("success");
-          setTimeout(() => onSave(clean), 800);
-        } else setStatus("error");
-      } catch {
-        setStatus("error");
-      }
-      setTesting(false);
-    }
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "radial-gradient(ellipse at 50% 30%,#3b1e07,#1c0e05 45%,#120803)", padding: "2rem", textAlign: "center" }, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { fontSize: "3rem", marginBottom: "1.5rem" }, children: "\u{1F525}" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { style: { fontFamily: "Georgia,serif", color: "#fdf3df", fontSize: "1.75rem", marginBottom: ".5rem" }, children: "Connect Firebase" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: { color: "rgba(253,243,223,.55)", fontSize: ".875rem", maxWidth: "22rem", lineHeight: 1.7, marginBottom: "2rem" }, children: "To sync orders between customer phones and your staff terminal in real-time, connect a free Firebase Realtime Database." }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { background: "rgba(255,255,255,.05)", border: "1px solid rgba(200,137,26,.3)", borderRadius: "1rem", padding: "1.5rem", width: "100%", maxWidth: "26rem", textAlign: "left" }, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: { color: "#c8891a", fontWeight: 700, fontSize: ".75rem", letterSpacing: ".1em", textTransform: "uppercase", marginBottom: ".75rem" }, children: "Steps" }),
-        [
-          "Go to console.firebase.google.com",
-          "Create a project \u2192 Build \u2192 Realtime Database",
-          "Create database \u2192 Start in test mode",
-          "Copy the URL (looks like https://xxx.firebaseio.com)",
-          "Paste it below and click Connect"
-        ].map((s, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "flex", gap: ".75rem", alignItems: "flex-start", marginBottom: ".625rem" }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { background: "#e7b008", color: "#26170d", borderRadius: "50%", width: "1.25rem", height: "1.25rem", display: "flex", alignItems: "center", justifyContent: "center", fontSize: ".625rem", fontWeight: 700, flexShrink: 0, marginTop: ".1rem" }, children: i + 1 }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { color: "rgba(253,243,223,.75)", fontSize: ".8125rem", lineHeight: 1.5 }, children: s })
-        ] }, i))
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "flex", gap: ".75rem", marginTop: "1.5rem", width: "100%", maxWidth: "26rem" }, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-          "input",
-          {
-            value: url,
-            onChange: (e) => setUrl(e.target.value),
-            placeholder: "https://your-app-default-rtdb.firebaseio.com",
-            style: { flex: 1, background: "rgba(255,255,255,.08)", border: "1px solid rgba(200,137,26,.35)", borderRadius: ".75rem", color: "#fdf3df", fontSize: ".8125rem", padding: ".75rem 1rem", outline: "none" }
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-          "button",
-          {
-            onClick: test,
-            disabled: !url.trim() || testing,
-            style: { background: status === "success" ? "#16a34a" : "linear-gradient(135deg,#e7b008,#c8891a)", color: status === "success" ? "#fff" : "#26170d", border: "none", borderRadius: ".75rem", padding: ".75rem 1.25rem", fontWeight: 700, fontSize: ".875rem", cursor: "pointer", whiteSpace: "nowrap", opacity: !url.trim() || testing ? 0.5 : 1 },
-            children: testing ? "Testing\u2026" : status === "success" ? "\u2713 Connected!" : "Connect"
-          }
-        )
-      ] }),
-      status === "error" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: { color: "#ef4343", fontSize: ".8125rem", marginTop: ".75rem" }, children: "Could not connect. Check the URL and database rules (must allow read/write)." }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => onSave(null), style: { background: "transparent", border: "none", color: "rgba(253,243,223,.3)", fontSize: ".75rem", marginTop: "1.5rem", cursor: "pointer", textDecoration: "underline" }, children: "Skip \u2014 work offline (orders won't sync between devices)" })
-    ] });
   }
   var ErrorBoundary = class extends import_react4.default.Component {
     constructor(props) {
@@ -13757,7 +13696,7 @@
       )
     ] });
   }
-  function CustomerMenu({ menuItems, orders, paymentMethods, onCreateOrder, onAddSentiment, tableId, onBack, T }) {
+  function CustomerMenu({ menuItems, orders, paymentMethods, onCreateOrder, onAddSentiment, tableId, onBack, T, isCustomerQR = false }) {
     const [intro, setIntro] = (0, import_react3.useState)(true);
     const [category, setCategory] = (0, import_react3.useState)("All");
     const [cart, setCart] = (0, import_react3.useState)([]);
@@ -13835,7 +13774,7 @@
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-amber-100/80 text-sm max-w-xs", children: "\u12A5\u1295\u12B3\u1295 \u12C8\u12F0 \u1206\u120A \u12AB\u134C \u1260\u12F0\u1205\u1293 \u1218\u1321! \u1208\u1218\u1240\u1320\u120D \u12ED\u132B\u1291" })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { className: "sticky top-0 z-30 px-5 py-3.5 flex items-center justify-between", style: { background: T.card, borderBottom: `1px solid ${T.border}` }, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: onBack, className: "p-1.5 -ml-1.5 rounded-lg", style: { color: T.mutedFg }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiArrowLeft, { size: 18 }) }),
+        onBack ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: onBack, className: "p-1.5 -ml-1.5 rounded-lg", style: { color: T.mutedFg }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiArrowLeft, { size: 18 }) }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { width: 28 } }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "text-center", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { className: "text-xl font-bold leading-tight", style: { fontFamily: SERIF }, children: "ELGA CAFE" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-[10px] font-semibold tracking-[0.25em]", style: { color: T.mutedFg }, children: "DIRE DAWA" })
@@ -14912,29 +14851,8 @@
     ] });
   }
   function AppInner() {
-    const [fbUrl, setFbUrl] = (0, import_react3.useState)(() => {
-      try {
-        return localStorage.getItem(FB_CONFIG_KEY) || "";
-      } catch {
-        return "";
-      }
-    });
+    const fbUrl = "https://elga-ef0d4-default-rtdb.firebaseio.com";
     const [fbReady, setFbReady] = (0, import_react3.useState)(false);
-    const [showFbSetup, setShowFbSetup] = (0, import_react3.useState)(() => {
-      try {
-        return !localStorage.getItem(FB_CONFIG_KEY);
-      } catch {
-        return false;
-      }
-    });
-    function saveFbConfig(url) {
-      try {
-        if (url) localStorage.setItem(FB_CONFIG_KEY, url);
-      } catch {
-      }
-      setFbUrl(url || "");
-      setShowFbSetup(false);
-    }
     const [menuItems, setMenuItems] = (0, import_react3.useState)(SEED_MENU);
     const [orders, setOrders] = (0, import_react3.useState)([]);
     const [sentimentLogs, setSentimentLogs] = (0, import_react3.useState)([]);
@@ -15009,6 +14927,7 @@
         return null;
       }
     }, []);
+    const isCustomerQR = !!urlTable;
     const [view, setView] = (0, import_react3.useState)(urlTable ? "customer" : "landing");
     const [tableId, setTableId] = (0, import_react3.useState)(urlTable || "T1");
     const T = dark ? DARK : LIGHT;
@@ -15101,9 +15020,6 @@
       setSentimentLogs((s) => [...s, log]);
       if (fbUrl) fbWrite(fbUrl, `sentiment/${log.id}`, log);
     }
-    if (showFbSetup) {
-      return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FirebaseSetup, { T, onSave: saveFbConfig });
-    }
     if (fbUrl && !fbReady) {
       return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#1e130b", flexDirection: "column", gap: "1rem" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { fontSize: "3rem" }, children: "\u2615" }),
@@ -15124,7 +15040,8 @@
           tableId,
           onCreateOrder: createOrder,
           onAddSentiment: addSentiment,
-          onBack: () => setView("landing")
+          onBack: isCustomerQR ? null : () => setView("landing"),
+          isCustomerQR
         }
       );
     }
@@ -15141,7 +15058,8 @@
         onBack: () => setView("landing"),
         handlers,
         fbConnected: !!fbUrl,
-        onReconfigFb: () => setShowFbSetup(true)
+        onReconfigFb: () => {
+        }
       }
     );
   }
