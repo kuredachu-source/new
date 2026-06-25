@@ -14477,7 +14477,7 @@
       } catch {
       }
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "space-y-5 max-w-md", children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "space-y-6 max-w-3xl", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", { className: "text-xs font-semibold uppercase tracking-wide", style: { color: T.mutedFg }, children: "Table Identifier" }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex gap-2 mt-1.5", children: [
@@ -14525,7 +14525,7 @@
           children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest", style: { color: T.accent }, children: [
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiStar, { size: 12 }),
-              " Scan to order"
+              " QR Generator"
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
               "div",
@@ -14560,7 +14560,7 @@
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex gap-2 w-full mt-2", children: [
               /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, { T, className: "flex-1", onClick: downloadPng, children: [
                 /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiDownload, { size: 14 }),
-                " Download QR"
+                " Download QR Code"
               ] }),
               /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, { T, variant: "ghost", className: "flex-1", onClick: copyLink, children: [
                 /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiCopy, { size: 14 }),
@@ -14956,7 +14956,7 @@
       }
     }, []);
     const isCustomerQR = !!urlTable;
-    const [view, setView] = (0, import_react3.useState)(urlTable ? "intro" : "landing");
+    const [view, setView] = (0, import_react3.useState)("intro");
     const [tableId, setTableId] = (0, import_react3.useState)(urlTable || "T1");
     const T = dark ? DARK : LIGHT;
     const createOrder = (0, import_react3.useCallback)((table, cart, paymentId, dineType = "Dine In") => {
@@ -15138,3 +15138,5 @@ react/cjs/react-jsx-runtime.production.js:
    * LICENSE file in the root directory of this source tree.
    *)
 */
+
+;try{localStorage.setItem('elga_auto_menu','true');localStorage.setItem('elga_feedback_after_order','true')}catch(e){}
