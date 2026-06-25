@@ -13511,7 +13511,7 @@
   function Button({ children, onClick, variant = "primary", disabled, className = "", T }) {
     const styles = {
       primary: { background: T.primary, color: T.primaryFg },
-      outline: { background: "transparent", color: T.fg, border: `1px solid ${T.border}` },
+      outline: { background: "transparent", color: T.fg, border: "none" },
       accent: { background: T.accent, color: T.accentFg },
       ghost: { background: T.secondary, color: T.fg },
       danger: { background: "transparent", color: T.destructive, border: `1px solid ${T.destructive}` }
@@ -13529,8 +13529,8 @@
   }
   function Modal({ open, onClose, title, children, maxW = "max-w-md", T }) {
     if (!open) return null;
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4", style: { background: "rgba(15,9,4,0.5)" }, onClick: onClose, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: `w-full ${maxW} max-h-[88vh] flex flex-col rounded-t-2xl sm:rounded-2xl overflow-hidden`, style: { background: T.card, border: `1px solid ${T.border}` }, onClick: (e) => e.stopPropagation(), children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between px-5 py-4 shrink-0", style: { borderBottom: `1px solid ${T.border}` }, children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4", style: { background: "rgba(15,9,4,0.5)" }, onClick: onClose, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: `w-full ${maxW} max-h-[88vh] flex flex-col rounded-t-2xl sm:rounded-2xl overflow-hidden`, style: { background: T.card, border: "none" }, onClick: (e) => e.stopPropagation(), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between px-5 py-4 shrink-0", style: { borderBottom: "none" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", { className: "text-lg font-bold", style: { fontFamily: SERIF, color: T.fg }, children: title }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: onClose, style: { color: T.mutedFg }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiX, { size: 20 }) })
       ] }),
@@ -13550,7 +13550,7 @@
     ] });
   }
   function StatCard({ icon, label, value, sub, T, accentColor }) {
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4", style: { background: T.card, border: "none" }, children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide", style: { color: T.mutedFg }, children: [
         icon,
         label
@@ -13664,7 +13664,7 @@
       });
     }
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3", children: [
-      open && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-80 rounded-2xl shadow-2xl flex flex-col overflow-hidden", style: { height: 420, background: T.card, border: `1px solid ${T.border}` }, children: [
+      open && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-80 rounded-2xl shadow-2xl flex flex-col overflow-hidden", style: { height: 420, background: T.card, border: "none" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "px-4 py-3 flex items-center gap-3", style: { background: T.primary, color: T.primaryFg }, children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0", style: { background: T.accent, color: T.accentFg }, children: "IB" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex-1 min-w-0", children: [
@@ -13677,7 +13677,7 @@
           messages.map((m, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: `flex ${m.role === "user" ? "justify-end" : "justify-start"}`, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-relaxed", style: m.role === "user" ? { background: T.primary, color: T.primaryFg } : { background: T.secondary, color: T.fg }, children: m.content }) }, i)),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { ref: endRef })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "p-3 flex gap-2", style: { borderTop: `1px solid ${T.border}` }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "p-3 flex gap-2", style: { borderTop: "none" }, children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
             "input",
             {
@@ -13785,7 +13785,7 @@
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs font-semibold tracking-widest uppercase mb-6", style: { color: "#c8891a" }, children: "Dire Dawa \xB7 Ethiopia" }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-amber-100/80 text-sm max-w-xs", children: "\u12A5\u1295\u12B3\u1295 \u12C8\u12F0 \u1206\u120A \u12AB\u134C \u1260\u12F0\u1205\u1293 \u1218\u1321! \u1208\u1218\u1240\u1320\u120D \u12ED\u132B\u1291" })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { className: "sticky top-0 z-30 px-5 py-3.5 flex items-center justify-between", style: { background: T.card, borderBottom: `1px solid ${T.border}` }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { className: "sticky top-0 z-30 px-5 py-3.5 flex items-center justify-between", style: { background: T.card, borderBottom: "none" }, children: [
         onBack ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: onBack, className: "p-1.5 -ml-1.5 rounded-lg", style: { color: T.mutedFg }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiArrowLeft, { size: 18 }) }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { width: 28 } }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "text-center", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { className: "text-xl font-bold leading-tight", style: { fontFamily: SERIF }, children: "ELGA CAFE" }),
@@ -13800,7 +13800,7 @@
           cartCount > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "absolute -top-1.5 -right-1.5 text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center", style: { background: T.destructive, color: "#fff" }, children: cartCount })
         ] })
       ] }),
-      trackedOrder && trackedOrder.status !== "served" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "px-4 pt-3 max-w-5xl mx-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl px-4 py-3 flex items-center gap-3", style: { background: T.secondary, border: `1px solid ${T.border}` }, children: [
+      trackedOrder && trackedOrder.status !== "served" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "px-4 pt-3 max-w-5xl mx-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl px-4 py-3 flex items-center gap-3", style: { background: T.secondary, border: "none" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "w-2.5 h-2.5 rounded-full shrink-0 animate-pulse", style: { background: STATUS_INFO[trackedOrder.status].dot } }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex-1 min-w-0", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-sm font-semibold", children: [
@@ -13823,7 +13823,7 @@
         visible.map((item) => {
           const qty = qtyOf(item.id);
           const isBase64 = item.imageUrl?.startsWith("data:");
-          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl overflow-hidden flex flex-col", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl overflow-hidden flex flex-col", style: { background: T.card, border: "none" }, children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full relative", style: { background: T.muted, minHeight: 140 }, children: [
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
                 "img",
@@ -13897,7 +13897,7 @@
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, variant: "ghost", className: "px-3 py-1.5 text-xs shrink-0", onClick: () => addToCart(suggestion), children: "Add" })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "pt-3", style: { borderTop: `1px solid ${T.border}` }, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "pt-3", style: { borderTop: "none" }, children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex justify-between font-bold text-lg mb-4", children: [
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Total" }),
               /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { style: { color: T.accent }, children: [
@@ -13963,7 +13963,7 @@
                 (item.price * item.quantity).toFixed(0)
               ] })
             ] }, item.menuItemId)),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "pt-2 flex justify-between font-bold", style: { borderTop: `1px solid ${T.border}` }, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "pt-2 flex justify-between font-bold", style: { borderTop: "none" }, children: [
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Total" }),
               /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { style: { color: T.accent }, children: [
                 "ETB ",
@@ -14025,14 +14025,14 @@
           id !== "all" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "w-2 h-2 rounded-full", style: { background: STATUS_INFO[id].dot } }),
           label
         ] }, id)) }),
-        filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl py-16 flex flex-col items-center gap-2", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
+        filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl py-16 flex flex-col items-center gap-2", style: { background: T.card, border: "none" }, children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiClock, { size: 28, style: { color: T.mutedFg, opacity: 0.5 } }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "font-semibold text-sm", children: "No orders yet" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs", style: { color: T.mutedFg }, children: "Waiting for new orders\u2026" })
         ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "space-y-3", children: [...filtered].reverse().map((o) => {
           const idx = STATUS_FLOW.indexOf(o.status);
           const next = STATUS_FLOW[idx + 1];
-          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4", style: { background: T.card, border: "none" }, children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between mb-2", children: [
               /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
                 /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "font-semibold text-sm", children: [
@@ -14090,7 +14090,7 @@
             placeholder: "e.g. Waiter 3 / Sara",
             autoFocus: true,
             className: "w-full text-sm rounded-xl px-4 py-3",
-            style: { background: T.secondary, border: "1px solid " + T.border, color: T.fg },
+            style: { background: T.secondary, border: "none", color: T.fg },
             onKeyDown: (e) => {
               if (e.key === "Enter" && waiterInput.trim()) {
                 onAdvance(waiterModal, waiterInput.trim());
@@ -14110,7 +14110,7 @@
     ] });
   }
   function AnalyticsSection({ icon, title, children, T }) {
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-5", style: { background: T.card, border: "1px solid " + T.border }, children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-5", style: { background: T.card, border: "none" }, children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-1.5", style: { color: T.accent }, children: [
         icon,
         " ",
@@ -14189,12 +14189,12 @@
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, { strokeDasharray: "3 3", stroke: T.border, horizontal: false }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, { type: "number", tick: { fontSize: 10, fill: T.mutedFg }, allowDecimals: false }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { type: "category", dataKey: "name", tick: { fontSize: 11, fill: T.fg }, width: 70 }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { background: T.card, border: `1px solid ${T.border}`, fontSize: 12 }, formatter: (v) => [`${v} sold`, "Qty"] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { background: T.card, border: "none", fontSize: 12 }, formatter: (v) => [`${v} sold`, "Qty"] }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bar, { dataKey: "qty", fill: "#16a34a", radius: [0, 4, 4, 0] })
         ] }) }) }) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnalyticsSection, { T, icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\u25C8" }), title: "Revenue by Category", children: donutData.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnalyticsEmpty, { T, label: "No data yet" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { height: 220 }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, { width: "100%", height: "100%", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PieChart, { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pie, { data: donutData, cx: "50%", cy: "45%", innerRadius: "52%", outerRadius: "78%", paddingAngle: 3, dataKey: "value", children: donutData.map((_, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cell, { fill: CAT_COLORS[i % CAT_COLORS.length] }, i)) }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { background: T.card, border: `1px solid ${T.border}`, fontSize: 12 }, formatter: (v) => [`ETB ${v.toFixed(0)}`, "Revenue"] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { background: T.card, border: "none", fontSize: 12 }, formatter: (v) => [`ETB ${v.toFixed(0)}`, "Revenue"] }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Legend, { iconType: "circle", iconSize: 8, wrapperStyle: { fontSize: 11, color: T.fg } })
         ] }) }) }) })
       ] }),
@@ -14202,7 +14202,7 @@
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, { strokeDasharray: "3 3", stroke: T.border }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, { dataKey: "date", tick: { fontSize: 10, fill: T.mutedFg } }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { tick: { fontSize: 10, fill: T.mutedFg } }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { background: T.card, border: `1px solid ${T.border}`, fontSize: 12 }, formatter: (v) => [`ETB ${v.toFixed(0)}`, "Revenue"] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { background: T.card, border: "none", fontSize: 12 }, formatter: (v) => [`ETB ${v.toFixed(0)}`, "Revenue"] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Line, { type: "monotone", dataKey: "revenue", stroke: T.accent, strokeWidth: 2.5, dot: false })
       ] }) }) }) }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-4", children: [
@@ -14210,14 +14210,14 @@
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, { strokeDasharray: "3 3", stroke: T.border }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, { dataKey: "hour", tick: { fontSize: 9, fill: T.mutedFg }, interval: 2 }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { tick: { fontSize: 10, fill: T.mutedFg }, allowDecimals: false }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { background: T.card, border: `1px solid ${T.border}`, fontSize: 12 } }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { background: T.card, border: "none", fontSize: 12 } }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bar, { dataKey: "orders", fill: T.accent, radius: [3, 3, 0, 0] })
         ] }) }) }) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnalyticsSection, { T, icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiBarChart2, { size: 13 }), title: "Peak Days", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { height: 200 }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, { width: "100%", height: "100%", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(BarChart, { data: dayAgg, children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, { strokeDasharray: "3 3", stroke: T.border }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, { dataKey: "day", tick: { fontSize: 11, fill: T.mutedFg } }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { tick: { fontSize: 10, fill: T.mutedFg }, allowDecimals: false }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { background: T.card, border: `1px solid ${T.border}`, fontSize: 12 } }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { background: T.card, border: "none", fontSize: 12 } }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bar, { dataKey: "orders", fill: T.primary, radius: [3, 3, 0, 0] })
         ] }) }) }) })
       ] }),
@@ -14308,7 +14308,7 @@
             {
               onClick: () => fileRef.current?.click(),
               className: "w-full text-xs font-medium rounded-lg px-3 py-2 text-left flex items-center gap-2",
-              style: { background: T.secondary, border: `1px solid ${T.border}`, color: T.fg },
+              style: { background: T.secondary, border: "none", color: T.fg },
               children: [
                 /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiPlus, { size: 13 }),
                 " Upload from device"
@@ -14322,18 +14322,18 @@
               value: form.imageUrl?.startsWith("data:") ? "" : form.imageUrl || "",
               onChange: (e) => setForm((f) => ({ ...f, imageUrl: e.target.value })),
               className: "w-full text-xs rounded-lg px-3 py-2",
-              style: { background: T.secondary, border: `1px solid ${T.border}`, color: T.fg }
+              style: { background: T.secondary, border: "none", color: T.fg }
             }
           )
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { ref: fileRef, type: "file", accept: "image/*", className: "hidden", onChange: handleImageFile })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { placeholder: "Name (English)", value: form.nameEn, onChange: (e) => setForm({ ...form, nameEn: e.target.value }), className: "w-full text-sm rounded-md px-3 py-2", style: { background: T.secondary, border: `1px solid ${T.border}`, color: T.fg } }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { placeholder: "Name (Amharic)", value: form.nameAm, onChange: (e) => setForm({ ...form, nameAm: e.target.value }), className: "w-full text-sm rounded-md px-3 py-2", style: { background: T.secondary, border: `1px solid ${T.border}`, color: T.fg } }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { placeholder: "Description", value: form.description, onChange: (e) => setForm({ ...form, description: e.target.value }), className: "w-full text-sm rounded-md px-3 py-2", style: { background: T.secondary, border: `1px solid ${T.border}`, color: T.fg } }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { placeholder: "Name (English)", value: form.nameEn, onChange: (e) => setForm({ ...form, nameEn: e.target.value }), className: "w-full text-sm rounded-md px-3 py-2", style: { background: T.secondary, border: "none", color: T.fg } }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { placeholder: "Name (Amharic)", value: form.nameAm, onChange: (e) => setForm({ ...form, nameAm: e.target.value }), className: "w-full text-sm rounded-md px-3 py-2", style: { background: T.secondary, border: "none", color: T.fg } }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { placeholder: "Description", value: form.description, onChange: (e) => setForm({ ...form, description: e.target.value }), className: "w-full text-sm rounded-md px-3 py-2", style: { background: T.secondary, border: "none", color: T.fg } }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-2 gap-2", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { placeholder: "Price (ETB)", type: "number", value: form.price, onChange: (e) => setForm({ ...form, price: e.target.value }), className: "text-sm rounded-md px-3 py-2", style: { background: T.secondary, border: `1px solid ${T.border}`, color: T.fg } }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: form.category, onChange: (e) => setForm({ ...form, category: e.target.value }), className: "text-sm rounded-md px-3 py-2", style: { background: T.secondary, border: `1px solid ${T.border}`, color: T.fg }, children: ["Coffee", "Drinks", "Food", "Dessert"].map((c) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: c }, c)) })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { placeholder: "Price (ETB)", type: "number", value: form.price, onChange: (e) => setForm({ ...form, price: e.target.value }), className: "text-sm rounded-md px-3 py-2", style: { background: T.secondary, border: "none", color: T.fg } }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: form.category, onChange: (e) => setForm({ ...form, category: e.target.value }), className: "text-sm rounded-md px-3 py-2", style: { background: T.secondary, border: "none", color: T.fg }, children: ["Coffee", "Drinks", "Food", "Dessert"].map((c) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: c }, c)) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, className: "w-full", onClick: () => {
         if (!form.nameEn || !form.price) return;
@@ -14366,7 +14366,7 @@
         ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex gap-2 flex-wrap", children: categories.map((c) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => setCategory(c), className: "text-xs font-semibold px-3.5 py-1.5 rounded-full", style: category === c ? { background: T.primary, color: T.primaryFg } : { background: T.sidebarAccent, color: T.fg }, children: c }, c)) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl overflow-hidden", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl overflow-hidden", style: { background: T.card, border: "none" }, children: [
         visible.map((item, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-3 p-3", style: i > 0 ? { borderTop: `1px solid ${T.border}` } : void 0, children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { src: item.imageUrl, className: "w-10 h-10 rounded-lg object-cover shrink-0" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex-1 min-w-0", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-sm font-medium truncate", children: [
@@ -14379,7 +14379,7 @@
             ] })
           ] }) }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-xs", style: { color: T.mutedFg }, children: "ETB" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { type: "number", value: item.price, onChange: (e) => onUpdatePrice(item.id, Number(e.target.value)), className: "w-16 text-sm rounded-md px-2 py-1", style: { background: T.secondary, border: `1px solid ${T.border}` } }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { type: "number", value: item.price, onChange: (e) => onUpdatePrice(item.id, Number(e.target.value)), className: "w-16 text-sm rounded-md px-2 py-1", style: { background: T.secondary, border: "none" } }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Switch, { T, on: item.available, onClick: () => onToggle(item.id) }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => {
             setEditing(item);
@@ -14407,19 +14407,19 @@
           " Clear All"
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "grid grid-cols-2 sm:grid-cols-4 gap-3", children: counts.map((s) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4 flex flex-col items-center gap-1", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "grid grid-cols-2 sm:grid-cols-4 gap-3", children: counts.map((s) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4 flex flex-col items-center gap-1", style: { background: T.card, border: "none" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-2xl", children: s.emoji }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-2xl font-bold", style: { fontFamily: SERIF }, children: s.count }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs", style: { color: T.mutedFg }, children: s.label })
       ] }, s.emoji)) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl overflow-hidden", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl overflow-hidden", style: { background: T.card, border: "none" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-4 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide", style: { background: T.sidebarAccent, color: T.mutedFg }, children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Emoji" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Table" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Order" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Time" })
         ] }),
-        logs.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-sm text-center py-10", style: { color: T.mutedFg }, children: "No feedback submitted yet." }) : [...logs].reverse().map((l) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-4 px-4 py-3 text-sm items-center", style: { borderTop: `1px solid ${T.border}` }, children: [
+        logs.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-sm text-center py-10", style: { color: T.mutedFg }, children: "No feedback submitted yet." }) : [...logs].reverse().map((l) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-4 px-4 py-3 text-sm items-center", style: { borderTop: "none" }, children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-xl", children: l.emoji }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
             "Table ",
@@ -14489,7 +14489,7 @@
               onKeyDown: (e) => e.key === "Enter" && generate(),
               maxLength: 40,
               className: "flex-1 text-sm rounded-lg px-3 py-2",
-              style: { background: T.secondary, border: `1px solid ${T.border}` }
+              style: { background: T.secondary, border: "none" }
             }
           ),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, { T, onClick: () => generate(), children: [
@@ -14519,7 +14519,7 @@
           className: "rounded-2xl p-7 flex flex-col items-center gap-3 relative overflow-hidden transition-all duration-700",
           style: {
             background: `radial-gradient(circle at 50% 0%, ${T.secondary}, ${T.card} 70%)`,
-            border: `1px solid ${T.border}`,
+            border: "none",
             boxShadow: justGenerated ? `0 0 0 4px ${T.accent}55, 0 12px 28px -8px rgba(0,0,0,0.25)` : "0 12px 28px -10px rgba(0,0,0,0.18)"
           },
           children: [
@@ -14588,7 +14588,7 @@
       setDraft((d) => d.map((p) => p.id === id ? { ...p, ...patch } : p));
     }
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "space-y-4 max-w-xl", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-5", style: { background: T.card, border: `1px solid ${T.border}` }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-5", style: { background: T.card, border: "none" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between mb-1", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "font-bold", style: { fontFamily: SERIF }, children: "Payment Methods" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex gap-2", children: [
@@ -14608,8 +14608,8 @@
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs mb-4", style: { color: T.mutedFg }, children: "Manage payment options shown to customers at checkout" }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "space-y-2", children: draft.map((pm) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "rounded-xl p-3.5", style: { background: T.secondary }, children: editing === pm.id ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { value: pm.name, onChange: (e) => update(pm.id, { name: e.target.value }), placeholder: "Name", className: "w-full text-sm rounded-md px-2.5 py-1.5", style: { background: T.card, border: `1px solid ${T.border}` } }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { value: pm.account, onChange: (e) => update(pm.id, { account: e.target.value }), placeholder: "Account / number", className: "w-full text-sm rounded-md px-2.5 py-1.5 font-mono", style: { background: T.card, border: `1px solid ${T.border}` } }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { value: pm.name, onChange: (e) => update(pm.id, { name: e.target.value }), placeholder: "Name", className: "w-full text-sm rounded-md px-2.5 py-1.5", style: { background: T.card, border: "none" } }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { value: pm.account, onChange: (e) => update(pm.id, { account: e.target.value }), placeholder: "Account / number", className: "w-full text-sm rounded-md px-2.5 py-1.5 font-mono", style: { background: T.card, border: "none" } }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex justify-end", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, variant: "ghost", className: "text-xs px-3 py-1", onClick: () => setEditing(null), children: "Done" }) })
         ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-3", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "w-3 h-3 rounded-full shrink-0", style: { background: pm.color } }),
@@ -14684,11 +14684,11 @@
         { label: "Items Sold", value: totalQty },
         { label: "Orders", value: new Set(orders.map((o) => o.id)).size },
         { label: "Report Rows", value: filtered.length }
-      ].map(({ label, value, accent }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4", style: { background: T.card, border: "1px solid " + T.border }, children: [
+      ].map(({ label, value, accent }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4", style: { background: T.card, border: "none" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs uppercase tracking-wide", style: { color: T.mutedFg }, children: label }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-2xl font-bold mt-1", style: { fontFamily: SERIF, color: accent ? T.accent : T.fg }, children: value })
       ] }, label)) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4 flex flex-wrap gap-3 items-end", style: { background: T.card, border: "1px solid " + T.border }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "rounded-xl p-4 flex flex-wrap gap-3 items-end", style: { background: T.card, border: "none" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-1", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", { className: "text-xs font-semibold uppercase tracking-wide", style: { color: T.mutedFg }, children: "From" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
@@ -14698,7 +14698,7 @@
               value: dateFrom,
               onChange: (e) => setDateFrom(e.target.value),
               className: "text-sm rounded-lg px-3 py-1.5",
-              style: { background: T.secondary, border: "1px solid " + T.border, color: T.fg }
+              style: { background: T.secondary, border: "none", color: T.fg }
             }
           )
         ] }),
@@ -14711,7 +14711,7 @@
               value: dateTo,
               onChange: (e) => setDateTo(e.target.value),
               className: "text-sm rounded-lg px-3 py-1.5",
-              style: { background: T.secondary, border: "1px solid " + T.border, color: T.fg }
+              style: { background: T.secondary, border: "none", color: T.fg }
             }
           )
         ] }),
@@ -14723,7 +14723,7 @@
               value: filterStatus,
               onChange: (e) => setFilterStatus(e.target.value),
               className: "text-sm rounded-lg px-3 py-1.5",
-              style: { background: T.secondary, border: "1px solid " + T.border, color: T.fg },
+              style: { background: T.secondary, border: "none", color: T.fg },
               children: [
                 /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "all", children: "All" }),
                 STATUS_FLOW.map((s) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: s, children: STATUS_INFO[s].label }, s))
@@ -14739,7 +14739,7 @@
               value: filterDine,
               onChange: (e) => setFilterDine(e.target.value),
               className: "text-sm rounded-lg px-3 py-1.5",
-              style: { background: T.secondary, border: "1px solid " + T.border, color: T.fg },
+              style: { background: T.secondary, border: "none", color: T.fg },
               children: [
                 /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "all", children: "All" }),
                 /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "Dine In", children: "\u{1F37D} Dine In" }),
@@ -14761,7 +14761,7 @@
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "rounded-xl overflow-hidden", style: { border: "1px solid " + T.border }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { overflowX: "auto" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { style: { width: "100%", borderCollapse: "collapse" }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "rounded-xl overflow-hidden", style: { border: "none" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { overflowX: "auto" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { style: { width: "100%", borderCollapse: "collapse" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { children: "Date" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TH, { children: "Time" }),
@@ -14905,12 +14905,12 @@
           t.icon,
           t.label
         ] }, t.id)) }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "px-3 py-4", style: { borderTop: `1px solid ${T.border}` }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: onToggleDark, className: "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium", style: { color: T.mutedFg }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "px-3 py-4", style: { borderTop: "none" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: onToggleDark, className: "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium", style: { color: T.mutedFg }, children: [
           dark ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiSun, { size: 16 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiMoon, { size: 16 }),
           dark ? "Light Mode" : "Dark Mode"
         ] }) })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "md:hidden fixed top-0 left-0 right-0 z-40", style: { background: T.sidebar, borderBottom: `1px solid ${T.border}` }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "md:hidden fixed top-0 left-0 right-0 z-40", style: { background: T.sidebar, borderBottom: "none" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between px-4 py-3", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: onBack, className: "flex items-center gap-2", children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiArrowLeft, { size: 16 }),
