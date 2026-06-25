@@ -14012,8 +14012,7 @@
           }, className: "text-4xl hover:scale-125 active:scale-110 transition-transform", children: s.emoji }, s.emoji)) }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => { setCartOpen(false); setStep("cart"); }, className: "text-xs underline mt-1", style: { color: T.mutedFg }, children: "Skip rating" })
         ] })
-      ] })
-,
+      ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Modal, { T, open: sentimentOpen, onClose: () => setSentimentOpen(false), title: "How was your experience?", maxW: "max-w-sm", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "text-center", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-sm mb-4", style: { color: T.mutedFg }, children: "Tap to rate your visit at ELGA CAFE" }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex justify-center gap-4 mb-4", children: SENTIMENT_OPTIONS.map((s) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => {
@@ -14945,7 +14944,7 @@
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: styles.hostessRole, children: "AI HOSTESS \u00B7 ELGA CAFE" }),
           ]}),
         ]}),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: styles.greeting, children: "\u12A5\u1295\u12A8\u12A8\u1295 \u12C8\u12F0 \u1203\u120B \u12AB\u1698 \u1260\u12F0\u1273\u1295 \u1218\u1320\u12C3! \u12A5\u1294 \u12D5\u1235\u122B\u12A4\u120D \u1260\u120B\u12ED \u1290\u129D\u1362\u1362 \u12DB\u1� \u1218\u1295 \u121B\u12D8\u12DB \u12ED\u1348\u1208\u1309?" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: styles.greeting, children: "\u12A5\u1295\u12A8\u12A8\u1295 \u12C8\u12F0 \u1203\u120B \u12AB\u1698 \u1260\u12F0\u1273\u1295 \u1218\u1320\u12C3! \u12A5\u1294 \u12D5\u1235\u122B\u12A4\u120D \u1260\u120B\u12ED \u1290\u129D\u1362\u1362 \u12DB\u122D\u12CD \u1218\u1295 \u121B\u12D8\u12DB \u12ED\u1348\u1208\u1309?" }),
       ]}),
     ]});
   }
