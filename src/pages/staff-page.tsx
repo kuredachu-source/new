@@ -26,8 +26,8 @@ export default function StaffPage() {
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       {/* Sidebar — desktop */}
-      <aside className="w-56 shrink-0 bg-sidebar  flex-col hidden md:flex">
-        <div className="px-5 py-5 ">
+      <aside className="w-56 shrink-0 bg-sidebar border-r border-sidebar-border flex-col hidden md:flex">
+        <div className="px-5 py-5 border-b border-sidebar-border">
           <h1 className="font-serif text-lg font-bold text-sidebar-foreground">Holly Cafe</h1>
           <p className="text-[10px] font-semibold tracking-[0.3em] text-sidebar-foreground/50 mt-0.5 uppercase">Staff Terminal</p>
         </div>
@@ -50,7 +50,7 @@ export default function StaffPage() {
           ))}
         </nav>
 
-        <div className="px-3 py-4 ">
+        <div className="px-3 py-4 border-t border-sidebar-border">
           <button
             data-testid="button-theme-toggle"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -63,7 +63,7 @@ export default function StaffPage() {
       </aside>
 
       {/* Mobile top nav */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-sidebar ">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-sidebar border-b border-sidebar-border">
         <div className="flex items-center justify-between px-4 py-3">
           <h1 className="font-serif font-bold text-sidebar-foreground">Holly Cafe — Staff</h1>
           <button
