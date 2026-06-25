@@ -13629,7 +13629,7 @@
       ] })
     ] });
   }
-  function IsraelChat({ T }) {
+  function IsraelChat({ T, menuItems = [], cart = [], tableId = '', orders = [] }) {
     const [open, setOpen] = (0, import_react3.useState)(false);
     const [messages, setMessages] = (0, import_react3.useState)([
       { role: "assistant", content: "\u12A5\u1295\u12B3\u1295 \u12C8\u12F0 \u1206\u120A \u12AB\u134C \u1260\u12F0\u1205\u1293 \u1218\u1321! \u12A5\u1294 \u12A5\u1235\u122B\u12A4\u120D \u1260\u120B\u12ED \u1290\u129D\u1362 \u121D\u1293\u120C\u12EB\u127D\u1295 \u12A8\u121D\u1295 \u120B\u1235\u1270\u12CB\u12CD\u1245\u12CE?" }
@@ -13639,19 +13639,45 @@
     (0, import_react3.useEffect)(() => {
       endRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
-    function reply(text) {
-      const t = text.toLowerCase();
-      if (t.includes("coffee") || t.includes("\u1261\u1293") || t.includes("buna")) return "We pour Buna, Macchiato and Cappuccino \u2014 all brewed fresh. The Buna (ETB 40) is our signature.";
-      if (t.includes("price") || t.includes("\u12CB\u130B")) return "Prices run from ETB 25 for tea up to ETB 260 for Doro Wat. Tap any item to add it to your cart!";
-      if (t.includes("payment") || t.includes("pay")) return "We accept CBE, Telebirr, E-birr, or cash at the counter \u2014 you'll choose at checkout.";
-      return "\u12ED\u1245\u122D\u1273\u1363 \u1208\u1260\u1208\u1320 \u1218\u1228\u1303 \u121D\u1293\u120C\u12CD\u1295 \u12ED\u1218\u120D\u12A8\u1271! Take a look at the menu above \u2014 I'm happy to help you pick something.";
-    }
-    function send() {
-      if (!input.trim()) return;
+    const [isLoading, setIsLoading] = (0, import_react3.useState)(false);
+    async function send() {
+      if (!input.trim() || isLoading) return;
       const userMsg = { role: "user", content: input.trim() };
-      setMessages((m) => [...m, userMsg]);
+      const newMessages = [...messages, userMsg];
+      setMessages(newMessages);
       setInput("");
-      setTimeout(() => setMessages((m) => [...m, { role: "assistant", content: reply(userMsg.content) }]), 500);
+      setIsLoading(true);
+      try {
+        const menuSummary = menuItems.filter(m => m.available).map(m =>
+          "- " + m.nameEn + " (" + m.nameAm + "): ETB " + m.price + " [" + m.category + "]" + (m.description ? " - " + m.description : "")
+        ).join("\n");
+        const cartSummary = cart.length > 0
+          ? cart.map(c => c.nameEn + " x" + c.quantity + " = ETB " + (c.price * c.quantity).toFixed(0)).join(", ")
+          : "empty";
+        const recentOrder = orders.filter(o => o.tableId === tableId).slice(-1)[0];
+        const orderStatus = recentOrder
+          ? "Recent order #" + recentOrder.id + ": " + recentOrder.status + ", ETB " + recentOrder.totalAmount
+          : "No recent orders";
+        const systemPrompt = "You are \u12A5\u1235\u122B\u12A4\u120D \u1260\u120B\u12ED (Israel Belay), the warm and knowledgeable AI hostess at ELGA CAFE in Dire Dawa, Ethiopia.\nYou ALWAYS respond in BOTH Amharic and English \u2014 first Amharic paragraph, then English paragraph.\nBe warm, helpful, concise (2-4 sentences per language), and knowledgeable about the menu.\n\nCURRENT MENU (available items only):\n" + menuSummary + "\n\nCUSTOMER CART: " + cartSummary + "\nORDER STATUS: " + orderStatus + "\nTABLE: " + tableId + "\n\nRULES:\n- Recommend specific menu items by name and price\n- If asked about items not on menu, say they are not available today\n- If cart has items, you can comment warmly on their choices\n- Always mention ETB prices when recommending\n- Keep responses SHORT and friendly\n- Never make up items not in the menu above\n- Amharic first, English second, always both";
+        const apiMessages = newMessages.filter((_, i) => i > 0).map(m => ({ role: m.role, content: m.content }));
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-6",
+            max_tokens: 350,
+            system: systemPrompt,
+            messages: apiMessages
+          })
+        });
+        const data = await res.json();
+        const reply = data.content && data.content[0] && data.content[0].text ? data.content[0].text : "\u12ED\u1245\u122D\u1273\u1363 \u12A5\u1263\u12AD\u1205  እድሜ ይሁንልዎ። Sorry, please try again.";
+        setMessages(function(m) { return [...m, { role: "assistant", content: reply }]; });
+      } catch (e) {
+        setMessages(function(m) { return [...m, { role: "assistant", content: "\u12ED\u1245\u122D\u1273\u1363 \u1208\u1302\u1300\u12CD \u12A0\u120D\u127B\u120D\u12A9\u121D\u1362 Sorry, I am having trouble connecting right now." }]; });
+      } finally {
+        setIsLoading(false);
+      }
     }
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3", children: [
       open && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-80 rounded-2xl shadow-2xl flex flex-col overflow-hidden", style: { height: 420, background: T.card, border: `1px solid ${T.border}` }, children: [
@@ -13674,12 +13700,13 @@
               value: input,
               onChange: (e) => setInput(e.target.value),
               onKeyDown: (e) => e.key === "Enter" && send(),
-              placeholder: "\u12ED\u133B\u1349...",
+              placeholder: isLoading ? "\u12D5\u1235\u122B\u12A4\u120D \u1260\u120D\u1270\u1200\u1200\u1265\u1362.." : "\u12ED\u133B\u1349 \u12C8\u12ED\u121D \u12ED\u1293\u1308\u1229...",
               className: "flex-1 text-sm rounded-xl px-3 py-2 outline-none",
-              style: { background: T.secondary, color: T.fg }
+              style: { background: T.secondary, color: T.fg },
+              disabled: isLoading
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: send, className: "rounded-xl px-3 py-2", style: { background: T.primary, color: T.primaryFg }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiSend, { size: 16 }) })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: send, disabled: isLoading, className: "rounded-xl px-3 py-2 transition-opacity", style: { background: T.primary, color: T.primaryFg, opacity: isLoading ? 0.5 : 1 }, children: isLoading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { fontSize: "0.75rem", fontWeight: 700 }, children: "..." }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiSend, { size: 16 }) })
         ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
@@ -13764,6 +13791,7 @@
       setDineType(null);
       setStep("cart");
       setCartOpen(false);
+      setStep("ordered");
     }
     const selectedPmLabel = allPaymentMethods.find((p) => p.id === payment)?.name || "Not selected";
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "min-h-screen", style: { background: T.bg, color: T.fg, fontFamily: SANS }, children: [
@@ -13857,7 +13885,7 @@
         visible.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "col-span-full text-center py-10 text-sm", style: { color: T.mutedFg }, children: "No items available in this category right now." })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("footer", { className: "px-4 py-6 text-center text-xs", style: { color: T.mutedFg }, children: "\xA9 ELGA CAFE \xB7 Dire Dawa, Ethiopia" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Modal, { T, open: cartOpen, onClose: () => setCartOpen(false), title: step === "cart" ? "Your Order" : step === "payment" ? "Choose Payment" : step === "dinetype" ? "How will you dine?" : "Confirm Order", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Modal, { T, open: cartOpen, onClose: () => { setCartOpen(false); setStep("cart"); }, title: step === "cart" ? "Your Order" : step === "payment" ? "Choose Payment" : step === "dinetype" ? "How will you dine?" : step === "ordered" ? "\u12A5\u1293\u12A8\u1230\u1221 / Order Placed!" : "Confirm Order", children: [
         step === "cart" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex flex-col gap-4", children: cart.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-center py-8 text-sm", style: { color: T.mutedFg }, children: "Your cart is empty" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "space-y-2", children: cart.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-3 rounded-xl p-3", style: { background: T.secondary }, children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex-1", children: [
@@ -13971,8 +13999,21 @@
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, variant: "outline", className: "flex-1", onClick: () => setStep("dinetype"), children: "Back" }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { T, className: "flex-1", onClick: placeOrder, children: "Place Order" })
           ] })
+        ] }),
+        step === "ordered" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col items-center gap-5 py-4 text-center", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { fontSize: "3.5rem" }, children: "\u2615" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", { style: { fontFamily: SERIF, fontSize: "1.3rem", fontWeight: 800, color: T.fg }, children: "\u12A5\u1293\u12A8\u1230\u1221!" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-sm", style: { color: T.mutedFg }, children: "Your order is in! Our team is preparing it now. / \u1218\u1228\u1303\u12CE \u1270\u1240\u1260\u1208! \u1240\u1295 \u1320\u1293\u1270\u1266\u1270\u12CB\u120D." }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs", style: { color: T.mutedFg }, children: "How was your ordering experience?" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex justify-center gap-4", children: SENTIMENT_OPTIONS.map((s) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => {
+            onAddSentiment(s.emoji, tableId, lastOrderId);
+            setCartOpen(false);
+            setStep("cart");
+          }, className: "text-4xl hover:scale-125 active:scale-110 transition-transform", children: s.emoji }, s.emoji)) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => { setCartOpen(false); setStep("cart"); }, className: "text-xs underline mt-1", style: { color: T.mutedFg }, children: "Skip rating" })
         ] })
-      ] }),
+      ] })
+,
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Modal, { T, open: sentimentOpen, onClose: () => setSentimentOpen(false), title: "How was your experience?", maxW: "max-w-sm", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "text-center", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-sm mb-4", style: { color: T.mutedFg }, children: "Tap to rate your visit at ELGA CAFE" }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex justify-center gap-4 mb-4", children: SENTIMENT_OPTIONS.map((s) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => {
@@ -13981,7 +14022,7 @@
         }, className: "text-4xl hover:scale-125 active:scale-110 transition-transform", children: s.emoji }, s.emoji)) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => setSentimentOpen(false), className: "text-xs underline", style: { color: T.mutedFg }, children: "Skip" })
       ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(IsraelChat, { T })
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(IsraelChat, { T, menuItems, cart, tableId, orders })
     ] });
   }
   function OrderQueue({ orders, onAdvance, T, fbConnected = false }) {
@@ -14792,6 +14833,123 @@
       ] }) }) })
     ] });
   }
+
+  function QRIntro({ tableId, onDone }) {
+    const [phase, setPhase] = (0, import_react3.useState)(0);
+    // phase 0: logo drop-in  1: name reveal  2: subtitle  3: hostess card  4: done (fade out)
+    (0, import_react3.useEffect)(() => {
+      const t1 = setTimeout(() => setPhase(1), 600);
+      const t2 = setTimeout(() => setPhase(2), 1400);
+      const t3 = setTimeout(() => setPhase(3), 2200);
+      const t4 = setTimeout(() => setPhase(4), 4000);
+      const t5 = setTimeout(() => onDone(), 4600);
+      return () => [t1,t2,t3,t4,t5].forEach(clearTimeout);
+    }, [onDone]);
+
+    const visible = (p) => phase >= p;
+    const fadeOut = phase === 4;
+
+    const styles = {
+      root: {
+        position: "fixed", inset: 0, zIndex: 9999,
+        background: "radial-gradient(ellipse at 50% 30%, #3d2005 0%, #1e130b 55%, #0e0804 100%)",
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        fontFamily: "Georgia, 'Times New Roman', serif",
+        transition: "opacity 0.6s ease",
+        opacity: fadeOut ? 0 : 1,
+        pointerEvents: fadeOut ? "none" : "auto",
+        overflow: "hidden",
+      },
+      rings: {
+        position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
+        pointerEvents: "none",
+      },
+      logoWrap: {
+        width: 110, height: 110, borderRadius: "50%",
+        background: "linear-gradient(145deg, #c8891a, #e6a820)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        boxShadow: "0 0 0 8px rgba(200,137,26,0.18), 0 20px 60px rgba(0,0,0,0.6)",
+        transition: "transform 0.7s cubic-bezier(0.34,1.56,0.64,1), opacity 0.5s ease",
+        transform: visible(0) ? "scale(1) translateY(0)" : "scale(0.3) translateY(-60px)",
+        opacity: visible(0) ? 1 : 0,
+        marginBottom: "1.5rem",
+        flexShrink: 0,
+      },
+      logoEmoji: { fontSize: "3rem", filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.4))" },
+      cafeName: {
+        fontSize: "clamp(2.6rem, 10vw, 4rem)", fontWeight: 900, color: "#f5e6c8", letterSpacing: "-0.01em",
+        lineHeight: 1,
+        transition: "opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1)",
+        opacity: visible(1) ? 1 : 0,
+        transform: visible(1) ? "translateY(0)" : "translateY(20px)",
+        textShadow: "0 2px 24px rgba(0,0,0,0.5)",
+        marginBottom: "0.4rem",
+      },
+      location: {
+        fontSize: "0.72rem", letterSpacing: "0.32em", fontFamily: "'Segoe UI', sans-serif",
+        color: "#c8891a", fontWeight: 700, textTransform: "uppercase",
+        transition: "opacity 0.7s ease, transform 0.6s ease",
+        opacity: visible(2) ? 1 : 0,
+        transform: visible(2) ? "translateY(0)" : "translateY(10px)",
+        marginBottom: "2.5rem",
+      },
+      card: {
+        background: "rgba(255,255,255,0.06)", backdropFilter: "blur(12px)",
+        border: "1px solid rgba(200,137,26,0.25)", borderRadius: "1rem",
+        padding: "1.1rem 1.4rem", maxWidth: 340, width: "90%",
+        transition: "opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1)",
+        opacity: visible(3) ? 1 : 0,
+        transform: visible(3) ? "translateY(0) scale(1)" : "translateY(24px) scale(0.96)",
+      },
+      cardHeader: { display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.7rem" },
+      avatar: {
+        width: 40, height: 40, borderRadius: "50%",
+        background: "linear-gradient(135deg, #c8891a, #e6a820)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontWeight: 800, fontSize: "0.9rem", color: "#1e130b", flexShrink: 0,
+      },
+      hostessName: { fontSize: "0.95rem", fontWeight: 700, color: "#f5e6c8", fontFamily: "'Segoe UI', sans-serif" },
+      hostessRole: { fontSize: "0.65rem", letterSpacing: "0.15em", color: "#c8891a", fontFamily: "'Segoe UI', sans-serif", textTransform: "uppercase", marginTop: 2 },
+      greeting: {
+        fontSize: "1rem", color: "#e8d5b0", lineHeight: 1.65,
+        fontFamily: "'Segoe UI', sans-serif", fontWeight: 400,
+      },
+    };
+
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: styles.root, children: [
+      /* Decorative rings */
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: styles.rings, children:
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { width: "700", height: "700", viewBox: "0 0 700 700", style: { opacity: 0.07 }, children:
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("g", { stroke: "#c8891a", fill: "none", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: 350, cy: 350, r: 120, strokeWidth: 1 }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: 350, cy: 350, r: 200, strokeWidth: 1 }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: 350, cy: 350, r: 280, strokeWidth: 0.5 }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: 350, cy: 350, r: 340, strokeWidth: 0.5 }),
+          ]})
+        })
+      }),
+      /* Logo */
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: styles.logoWrap, children:
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: styles.logoEmoji, children: "\u2615" })
+      }),
+      /* Cafe name */
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { style: styles.cafeName, children: "ELGA CAFE" }),
+      /* Location */
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: styles.location, children: "DIRE DAWA \u00B7 ETHIOPIA" }),
+      /* Hostess greeting card */
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: styles.card, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: styles.cardHeader, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: styles.avatar, children: "IB" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: styles.hostessName, children: "\u12D5\u1235\u122B\u12A4\u120D \u1260\u120B\u12ED" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: styles.hostessRole, children: "AI HOSTESS \u00B7 ELGA CAFE" }),
+          ]}),
+        ]}),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: styles.greeting, children: "\u12A5\u1295\u12A8\u12A8\u1295 \u12C8\u12F0 \u1203\u120B \u12AB\u1698 \u1260\u12F0\u1273\u1295 \u1218\u1320\u12C3! \u12A5\u1294 \u12D5\u1235\u122B\u12A4\u120D \u1260\u120B\u12ED \u1290\u129D\u1362\u1362 \u12DB\u1� \u1218\u1295 \u121B\u12D8\u12DB \u12ED\u1348\u1208\u1309?" }),
+      ]}),
+    ]});
+  }
+
   function StaffTerminal({ menuItems, orders, sentimentLogs, paymentMethods, dark, onToggleDark, onBack, handlers, T, fbConnected, onReconfigFb }) {
     const [tab, setTab] = (0, import_react3.useState)("orders");
     const TABS = [
@@ -14804,16 +14962,12 @@
       { id: "settings", label: "Settings", icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FiSettings, { size: 17 }) }
     ];
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "min-h-screen flex", style: { background: T.bg, color: T.fg, fontFamily: SANS }, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", { className: "w-56 shrink-0 hidden md:flex flex-col", style: { background: T.sidebar, borderRight: `1px solid ${T.border}` }, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: onBack, className: "px-5 py-5 text-left", style: { borderBottom: "1px solid " + T.border }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", { className: "w-56 shrink-0 hidden md:flex flex-col", style: { background: T.sidebar, borderRight: "none" }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: onBack, className: "px-5 py-6 text-left", style: {}, children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { className: "font-bold text-lg", style: { fontFamily: SERIF }, children: "ELGA CAFE" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "flex", alignItems: "center", gap: ".375rem", marginTop: ".25rem" }, children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { width: 6, height: 6, borderRadius: "50%", background: fbConnected ? "#16a34a" : "#d97706", display: "inline-block" } }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-[10px] font-semibold tracking-widest uppercase", style: { color: T.mutedFg }, children: fbConnected ? "Live Sync ON" : "Offline" }),
-            !fbConnected && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: onReconfigFb, style: { color: "#c8891a", fontSize: "0.6rem", textDecoration: "underline", background: "none", border: "none", cursor: "pointer" }, children: "Connect" })
-          ] })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-[10px] font-semibold tracking-widest uppercase mt-1", style: { color: T.mutedFg }, children: "STAFF TERMINAL" })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", { className: "flex-1 px-2 py-3 space-y-0.5", children: TABS.map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: () => setTab(t.id), className: "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all", style: tab === t.id ? { background: T.primary, color: T.primaryFg, border: "1.5px solid " + T.primary } : { color: T.fg, border: "1.5px solid " + T.border, background: T.card }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", { className: "flex-1 px-2 py-3 space-y-0.5", children: TABS.map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { onClick: () => setTab(t.id), className: "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all", style: tab === t.id ? { background: T.primary, color: T.primaryFg } : { color: T.fg, background: "transparent" }, children: [
           t.icon,
           t.label
         ] }, t.id)) }),
@@ -14851,75 +15005,15 @@
     ] });
   }
   function AppInner() {
-    const fbUrl = "https://elga-ef0d4-default-rtdb.firebaseio.com";
-    const [fbReady, setFbReady] = (0, import_react3.useState)(false);
     const [menuItems, setMenuItems] = (0, import_react3.useState)(SEED_MENU);
     const [orders, setOrders] = (0, import_react3.useState)([]);
     const [sentimentLogs, setSentimentLogs] = (0, import_react3.useState)([]);
     const [paymentMethods, setPaymentMethods] = (0, import_react3.useState)(DEFAULT_PAYMENT_METHODS);
     const [dark, setDark] = (0, import_react3.useState)(false);
-    (0, import_react3.useEffect)(() => {
-      if (!fbUrl) {
-        setFbReady(true);
-        return;
-      }
-      Promise.all([
-        fbRead(fbUrl, "menu"),
-        fbRead(fbUrl, "orders"),
-        fbRead(fbUrl, "sentiment"),
-        fbRead(fbUrl, "settings")
-      ]).then(([menuData, ordersData, sentData, settingsData]) => {
-        if (menuData && typeof menuData === "object") {
-          const items = Object.values(menuData).filter(Boolean);
-          if (items.length) setMenuItems(items);
-        }
-        if (ordersData && typeof ordersData === "object") {
-          setOrders(Object.values(ordersData).filter(Boolean).sort((a, b) => a.id - b.id));
-        }
-        if (sentData && typeof sentData === "object") {
-          setSentimentLogs(Object.values(sentData).filter(Boolean));
-        }
-        if (settingsData?.paymentMethods) setPaymentMethods(settingsData.paymentMethods);
-        setFbReady(true);
-      }).catch(() => setFbReady(true));
-    }, [fbUrl]);
-    (0, import_react3.useEffect)(() => {
-      if (!fbUrl) return;
-      return fbStream(fbUrl, "orders", (data, isPatch) => {
-        if (!data) {
-          setOrders([]);
-          return;
-        }
-        if (typeof data !== "object") return;
-        if (isPatch) {
-          setOrders((prev) => {
-            const map = Object.fromEntries(prev.map((o) => [String(o.id), o]));
-            Object.entries(data).forEach(([k, v]) => {
-              if (v) map[k] = v;
-              else delete map[k];
-            });
-            return Object.values(map).filter(Boolean).sort((a, b) => a.id - b.id);
-          });
-        } else {
-          setOrders(Object.values(data).filter(Boolean).sort((a, b) => a.id - b.id));
-        }
-      });
-    }, [fbUrl]);
-    (0, import_react3.useEffect)(() => {
-      if (!fbUrl) return;
-      return fbStream(fbUrl, "menu", (data) => {
-        if (!data || typeof data !== "object") return;
-        const items = Object.values(data).filter(Boolean);
-        if (items.length) setMenuItems(items);
-      });
-    }, [fbUrl]);
-    (0, import_react3.useEffect)(() => {
-      if (!fbUrl) return;
-      return fbStream(fbUrl, "sentiment", (data) => {
-        if (!data || typeof data !== "object") return;
-        setSentimentLogs(Object.values(data).filter(Boolean));
-      });
-    }, [fbUrl]);
+
+
+
+
     const urlTable = (0, import_react3.useMemo)(() => {
       try {
         return new URLSearchParams(window.location.search).get("table");
@@ -14928,7 +15022,7 @@
       }
     }, []);
     const isCustomerQR = !!urlTable;
-    const [view, setView] = (0, import_react3.useState)(urlTable ? "customer" : "landing");
+    const [view, setView] = (0, import_react3.useState)(urlTable ? "intro" : "landing");
     const [tableId, setTableId] = (0, import_react3.useState)(urlTable || "T1");
     const T = dark ? DARK : LIGHT;
     const createOrder = (0, import_react3.useCallback)((table, cart, paymentId, dineType = "Dine In") => {
@@ -14946,9 +15040,8 @@
         items: cart.map((i) => ({ menuItemId: i.menuItemId, nameEn: i.nameEn, nameAm: i.nameAm, category: i.category || "", quantity: i.quantity, unitPrice: i.price }))
       };
       setOrders((o) => [...o, order]);
-      if (fbUrl) fbWrite(fbUrl, `orders/${order.id}`, order);
       return order;
-    }, [paymentMethods, fbUrl]);
+    }, [paymentMethods]);
     const handlers = {
       advanceOrder: (id, waiter) => setOrders((os) => {
         const next = os.map((o) => {
@@ -14959,20 +15052,14 @@
           return { ...o, ...patch };
         });
         const updated = next.find((o) => o.id === id);
-        if (fbUrl && updated) fbWrite(fbUrl, `orders/${id}`, updated);
         return next;
       }),
       toggleAvailability: (id) => setMenuItems((items) => {
         const next = items.map((m) => m.id === id ? { ...m, available: !m.available } : m);
-        if (fbUrl) next.forEach((m) => fbWrite(fbUrl, `menu/${m.id}`, m));
         return next;
       }),
       updatePrice: (id, price) => setMenuItems((items) => {
         const next = items.map((m) => m.id === id ? { ...m, price } : m);
-        if (fbUrl) {
-          const m = next.find((x) => x.id === id);
-          if (m) fbWrite(fbUrl, `menu/${m.id}`, m);
-        }
         return next;
       }),
       saveMenuItem: (id, form) => setMenuItems((items) => {
@@ -14980,54 +15067,43 @@
         let next;
         if (id) {
           next = items.map((m) => m.id === id ? { ...m, ...data } : m);
-          if (fbUrl) fbWrite(fbUrl, `menu/${id}`, { ...items.find((m) => m.id === id), ...data });
         } else {
           const newItem = { id: nextId(), ...data, available: true };
           next = [...items, newItem];
-          if (fbUrl) fbWrite(fbUrl, `menu/${newItem.id}`, newItem);
         }
         return next;
       }),
       deleteMenuItem: (id) => setMenuItems((items) => {
-        if (fbUrl) fbDelete(fbUrl, `menu/${id}`);
         return items.filter((m) => m.id !== id);
       }),
       clearSentiment: () => {
         setSentimentLogs([]);
-        if (fbUrl) fbWrite(fbUrl, "sentiment", null);
       },
       clearPeriod: (since) => {
         setOrders((os) => {
           const keep = os.filter((o) => new Date(o.createdAt) < since);
           const remove = os.filter((o) => new Date(o.createdAt) >= since);
-          if (fbUrl) remove.forEach((o) => fbDelete(fbUrl, `orders/${o.id}`));
           return keep;
         });
         setSentimentLogs((s) => {
           const keep = s.filter((l) => new Date(l.createdAt) < since);
           const remove = s.filter((l) => new Date(l.createdAt) >= since);
-          if (fbUrl) remove.forEach((l) => fbDelete(fbUrl, `sentiment/${l.id}`));
           return keep;
         });
       },
       savePaymentMethods: (methods) => {
         setPaymentMethods(methods);
-        if (fbUrl) fbWrite(fbUrl, "settings/paymentMethods", methods);
       }
     };
     function addSentiment(emoji, table, orderId) {
       const log = { id: nextId(), emoji, tableId: table, orderId, createdAt: (/* @__PURE__ */ new Date()).toISOString() };
       setSentimentLogs((s) => [...s, log]);
-      if (fbUrl) fbWrite(fbUrl, `sentiment/${log.id}`, log);
-    }
-    if (fbUrl && !fbReady) {
-      return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#1e130b", flexDirection: "column", gap: "1rem" }, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { fontSize: "3rem" }, children: "\u2615" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: { color: "#c8891a", fontWeight: 700, fontFamily: "Georgia,serif", fontSize: "1.25rem" }, children: "Connecting to Firebase\u2026" })
-      ] });
-    }
+          }
     if (view === "landing") {
       return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Landing, { T, onEnter: setView });
+    }
+    if (view === "intro") {
+      return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QRIntro, { tableId, onDone: () => setView("customer") });
     }
     if (view === "customer") {
       return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
@@ -15057,7 +15133,7 @@
         onToggleDark: () => setDark((d) => !d),
         onBack: () => setView("landing"),
         handlers,
-        fbConnected: !!fbUrl,
+        fbConnected: false,
         onReconfigFb: () => {
         }
       }
