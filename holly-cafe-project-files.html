@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Holly Cafe – Project Files</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+  header { background: #1a1d2e; border-bottom: 1px solid #2d3148; padding: 20px 32px; display: flex; align-items: center; gap: 12px; }
+  header h1 { font-size: 1.3rem; font-weight: 600; color: #a78bfa; }
+  header span { font-size: 0.85rem; color: #64748b; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; display: flex; flex-direction: column; gap: 28px; }
+  .file-card { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; overflow: hidden; }
+  .file-header { display: flex; align-items: center; gap: 10px; padding: 12px 18px; background: #20243a; border-bottom: 1px solid #2d3148; cursor: pointer; user-select: none; }
+  .file-header:hover { background: #262b44; }
+  .file-icon { font-size: 1rem; }
+  .file-name { font-size: 0.92rem; font-weight: 600; color: #c4b5fd; flex: 1; }
+  .file-lang { font-size: 0.75rem; background: #312e81; color: #a5b4fc; padding: 2px 8px; border-radius: 20px; }
+  .toggle-btn { font-size: 0.75rem; color: #64748b; transition: transform 0.2s; }
+  .toggle-btn.open { transform: rotate(90deg); }
+  .file-body { overflow-x: auto; }
+  pre { margin: 0; padding: 18px 20px; font-size: 0.82rem; line-height: 1.65; font-family: 'Fira Code', 'Cascadia Code', monospace; white-space: pre; color: #cbd5e1; }
+  .collapsed { display: none; }
+
+  /* Syntax-like color hints via CSS (no JS highlighter needed) */
+  .lang-sql pre { color: #93c5fd; }
+  .lang-ts pre  { color: #86efac; }
+  .lang-json pre { color: #fde68a; }
+  .lang-toml pre { color: #f9a8d4; }
+  .lang-js pre  { color: #86efac; }
+  .lang-txt pre { color: #cbd5e1; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🌿 Holly Cafe — Project Files</h1>
+    <span>All source files · Read-only reference</span>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ── vite.config.ts ─────────────────────────────────────────── -->
+<div class="file-card lang-ts">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">📄</span>
+    <span class="file-name">vite.config.ts</span>
+    <span class="file-lang">TypeScript</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>// @lovable.dev/vite-tanstack-config already includes the following — do NOT add them manually
+// or the app will break with duplicate plugins:
+//   - tanstackStart, viteReact, tailwindcss, tsConfigPaths, cloudflare (build-only),
+//     componentTagger (dev-only), VITE_* env injection, @ path alias, React/TanStack dedupe,
+//     error logger plugins, and sandbox detection (port/host/strictPort).
+// You can pass additional config via defineConfig({ vite: { ... } }) if needed.
+import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+
+// Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
+// @cloudflare/vite-plugin builds from this — wrangler.jsonc main alone is insufficient.
+export default defineConfig({
+  tanstackStart: {
+    server: { entry: "server" },
+  },
+});</pre>
+  </div>
+</div>
+
+<!-- ── eslint.config.js ───────────────────────────────────────── -->
+<div class="file-card lang-js">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">📄</span>
+    <span class="file-name">eslint.config.js</span>
+    <span class="file-lang">JavaScript</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>import js from "@eslint/js";
+import eslintPluginPrettier from "eslint-plugin-prettier/recommended";
+import globals from "globals";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
+import tseslint from "typescript-eslint";
+
+export default tseslint.config(
+  { ignores: ["dist", ".output", ".vinxi"] },
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+    plugins: {
+      "react-hooks": reactHooks,
+      "react-refresh": reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "server-only",
+              message:
+                "TanStack Start does not use the Next.js `server-only` package. Rename the module to `*.server.ts` or mark it with `@tanstack/react-start/server-only`.",
+            },
+          ],
+        },
+      ],
+      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+  eslintPluginPrettier,
+);</pre>
+  </div>
+</div>
+
+<!-- ── tsconfig.json ──────────────────────────────────────────── -->
+<div class="file-card lang-json">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">📄</span>
+    <span class="file-name">tsconfig.json</span>
+    <span class="file-lang">JSON</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>{
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "eslint.config.js"],
+  "compilerOptions": {
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+
+    /* Bundler mode */
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": false,
+    "noEmit": true,
+
+    /* Linting */
+    "skipLibCheck": true,
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}</pre>
+  </div>
+</div>
+
+<!-- ── package.json ───────────────────────────────────────────── -->
+<div class="file-card lang-json">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">📄</span>
+    <span class="file-name">package.json</span>
+    <span class="file-lang">JSON</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>{
+  "name": "tanstack_start_ts",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@cloudflare/vite-plugin": "^1.25.5",
+    "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-accordion": "^1.2.12",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
+    "@radix-ui/react-aspect-ratio": "^1.1.8",
+    "@radix-ui/react-avatar": "^1.1.11",
+    "@radix-ui/react-checkbox": "^1.3.3",
+    "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-context-menu": "^2.2.16",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-hover-card": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-menubar": "^1.1.16",
+    "@radix-ui/react-navigation-menu": "^1.2.14",
+    "@radix-ui/react-popover": "^1.1.15",
+    "@radix-ui/react-progress": "^1.1.8",
+    "@radix-ui/react-radio-group": "^1.3.8",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slider": "^1.3.6",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-toast": "^1.2.15",
+    "@radix-ui/react-toggle": "^1.1.10",
+    "@radix-ui/react-toggle-group": "^1.1.11",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@supabase/supabase-js": "^2.106.2",
+    "@tailwindcss/vite": "^4.2.1",
+    "@tanstack/react-query": "^5.83.0",
+    "@tanstack/react-router": "^1.168.25",
+    "@tanstack/react-start": "^1.167.50",
+    "@tanstack/router-plugin": "^1.167.28",
+    "@types/qrcode": "^1.5.6",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "^4.1.0",
+    "embla-carousel-react": "^8.6.0",
+    "input-otp": "^1.4.2",
+    "lucide-react": "^0.575.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.2.0",
+    "react-day-picker": "^9.14.0",
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.71.2",
+    "react-resizable-panels": "^4.6.5",
+    "recharts": "^2.15.4",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^4.2.1",
+    "tw-animate-css": "^1.3.4",
+    "vaul": "^1.1.2",
+    "vite-tsconfig-paths": "^6.0.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@lovable.dev/vite-tanstack-config": "^1.7.0",
+    "@types/node": "^22.16.5",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.6",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^15.15.0",
+    "prettier": "^3.7.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.56.1",
+    "vite": "^7.3.1"
+  }
+}</pre>
+  </div>
+</div>
+
+<!-- ── components.json ────────────────────────────────────────── -->
+<div class="file-card lang-json">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">📄</span>
+    <span class="file-name">components.json</span>
+    <span class="file-lang">JSON</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "css": "src/styles.css",
+    "baseColor": "slate",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "rtl": false,
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "registries": {}
+}</pre>
+  </div>
+</div>
+
+<!-- ── bunfig.toml ────────────────────────────────────────────── -->
+<div class="file-card lang-toml">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">📄</span>
+    <span class="file-name">bunfig.toml</span>
+    <span class="file-lang">TOML</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>[install]
+# 24h supply-chain guard: skip package versions published less than a day ago.
+minimumReleaseAge = 86400
+# Each entry bypasses the 24h guard for one package — confirm with the user
+# before adding any.
+minimumReleaseAgeExcludes = ["@lovable.dev/vite-tanstack-config"]</pre>
+  </div>
+</div>
+
+<!-- ── config.toml ────────────────────────────────────────────── -->
+<div class="file-card lang-toml">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">📄</span>
+    <span class="file-name">config.toml</span>
+    <span class="file-lang">TOML</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>project_id = "lfhpprfwldwyaientkyo"</pre>
+  </div>
+</div>
+
+<!-- ── project.json ───────────────────────────────────────────── -->
+<div class="file-card lang-json">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">📄</span>
+    <span class="file-name">project.json</span>
+    <span class="file-lang">JSON</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>{
+  "schemaVersion": 1,
+  "template": "tanstack_start_ts_2026-05-12"
+}</pre>
+  </div>
+</div>
+
+<!-- ── supabase/functions/index.ts ───────────────────────────── -->
+<div class="file-card lang-ts">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">📄</span>
+    <span class="file-name">supabase/functions/index.ts</span>
+    <span class="file-lang">TypeScript (Deno)</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+const BASE_SYSTEM_PROMPT = `You are እስራኤል በላይ (Israel Belay), the AI hostess of Holly Cafe in Dire Dawa, Ethiopia.
+You speak warmly in Amharic by default, but you can switch to English if the customer writes in English.
+Help customers with the menu, recommend Ethiopian coffee and food, and answer questions about Holly Cafe.
+Keep replies short (1-3 sentences), friendly, and culturally warm. Use Ethiopian greetings naturally.
+
+CRITICAL: When customers ask about the menu, prices, or what's available, ALWAYS use the exact item names, Amharic names, prices, and categories from the LIVE MENU below. Never invent items or prices. If an item isn't on the live menu, say it's not currently available.`;
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  try {
+    const { message, history, menu } = await req.json();
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+
+    let systemPrompt = BASE_SYSTEM_PROMPT;
+    if (Array.isArray(menu) &amp;&amp; menu.length > 0) {
+      const menuText = menu
+        .map((m: any) => `- ${m.nameEn} (${m.nameAm}) — ${m.category} — ETB ${m.price}${m.description ? ` — ${m.description}` : ""}`)
+        .join("\n");
+      systemPrompt += `\n\nLIVE MENU (current, authoritative):\n${menuText}`;
+    }
+
+    const messages = [
+      { role: "system", content: systemPrompt },
+      ...(history ?? []),
+      { role: "user", content: message },
+    ];
+
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ model: "google/gemini-2.5-flash", messages, stream: true }),
+    });
+
+    if (!response.ok) {
+      const status = response.status;
+      const text = await response.text();
+      return new Response(JSON.stringify({ error: text }), {
+        status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(response.body, {
+      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+    });
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "unknown" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+});</pre>
+  </div>
+</div>
+
+<!-- ── Migration 1: 20260526155454 ───────────────────────────── -->
+<div class="file-card lang-sql">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">🗄️</span>
+    <span class="file-name">migrations/20260526155454_e25277ae.sql</span>
+    <span class="file-lang">SQL</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>
+-- menu_items
+CREATE TABLE public.menu_items (
+  id BIGSERIAL PRIMARY KEY,
+  name_en TEXT NOT NULL,
+  name_am TEXT NOT NULL,
+  description TEXT,
+  price NUMERIC(10,2) NOT NULL,
+  category TEXT NOT NULL,
+  image_url TEXT,
+  available BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.menu_items TO anon, authenticated;
+GRANT ALL ON public.menu_items TO service_role;
+GRANT USAGE, SELECT ON SEQUENCE public.menu_items_id_seq TO anon, authenticated, service_role;
+ALTER TABLE public.menu_items ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "menu_items public all" ON public.menu_items FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+
+-- orders
+CREATE TABLE public.orders (
+  id BIGSERIAL PRIMARY KEY,
+  table_id TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  total_amount NUMERIC(10,2) NOT NULL DEFAULT 0,
+  payment_method TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.orders TO anon, authenticated;
+GRANT ALL ON public.orders TO service_role;
+GRANT USAGE, SELECT ON SEQUENCE public.orders_id_seq TO anon, authenticated, service_role;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "orders public all" ON public.orders FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+
+-- order_items
+CREATE TABLE public.order_items (
+  id BIGSERIAL PRIMARY KEY,
+  order_id BIGINT NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
+  menu_item_id BIGINT NOT NULL,
+  name_en TEXT NOT NULL,
+  name_am TEXT NOT NULL,
+  quantity INTEGER NOT NULL,
+  unit_price NUMERIC(10,2) NOT NULL
+);
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.order_items TO anon, authenticated;
+GRANT ALL ON public.order_items TO service_role;
+GRANT USAGE, SELECT ON SEQUENCE public.order_items_id_seq TO anon, authenticated, service_role;
+ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "order_items public all" ON public.order_items FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+
+-- sentiment_logs
+CREATE TABLE public.sentiment_logs (
+  id BIGSERIAL PRIMARY KEY,
+  order_id BIGINT,
+  table_id TEXT NOT NULL,
+  emoji TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.sentiment_logs TO anon, authenticated;
+GRANT ALL ON public.sentiment_logs TO service_role;
+GRANT USAGE, SELECT ON SEQUENCE public.sentiment_logs_id_seq TO anon, authenticated, service_role;
+ALTER TABLE public.sentiment_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "sentiment_logs public all" ON public.sentiment_logs FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+
+-- updated_at trigger for orders
+CREATE OR REPLACE FUNCTION public.touch_updated_at()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+BEGIN NEW.updated_at = now(); RETURN NEW; END;
+$$;
+CREATE TRIGGER orders_set_updated_at BEFORE UPDATE ON public.orders
+  FOR EACH ROW EXECUTE FUNCTION public.touch_updated_at();
+
+-- Realtime
+ALTER TABLE public.orders REPLICA IDENTITY FULL;
+ALTER TABLE public.order_items REPLICA IDENTITY FULL;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.order_items;
+
+-- Seed menu
+INSERT INTO public.menu_items (name_en, name_am, description, price, category, image_url) VALUES
+  ('Macchiato', 'ማኪያቶ', 'Espresso with a touch of steamed milk', 55, 'Coffee', 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=600'),
+  ('Buna', 'ቡና', 'Traditional Ethiopian coffee', 40, 'Coffee', 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600'),
+  ('Cappuccino', 'ካፑቺኖ', 'Espresso with foamed milk', 70, 'Coffee', 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=600'),
+  ('Tea', 'ሻይ', 'Black tea with spices', 25, 'Drinks', 'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?w=600'),
+  ('Shiro Firfir', 'ሽሮ ፍርፍር', 'Spiced chickpea stew with injera', 180, 'Food', 'https://images.unsplash.com/photo-1567337710282-00832b415979?w=600'),
+  ('Doro Wat', 'ዶሮ ወጥ', 'Spicy chicken stew', 260, 'Food', 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=600'),
+  ('Cheesecake', 'ኬክ', 'Slice of classic cheesecake', 120, 'Dessert', 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600'),
+  ('Fresh Juice', 'ጁስ', 'Mixed seasonal fruit juice', 80, 'Drinks', 'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=600');</pre>
+  </div>
+</div>
+
+<!-- ── Migration 2: 20260526155506 ───────────────────────────── -->
+<div class="file-card lang-sql">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">🗄️</span>
+    <span class="file-name">migrations/20260526155506_bac53723.sql</span>
+    <span class="file-lang">SQL</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>CREATE OR REPLACE FUNCTION public.touch_updated_at()
+RETURNS TRIGGER LANGUAGE plpgsql SET search_path = public AS $$
+BEGIN NEW.updated_at = now(); RETURN NEW; END;
+$$;</pre>
+  </div>
+</div>
+
+<!-- ── Migration 3: 20260527025407 ───────────────────────────── -->
+<div class="file-card lang-sql">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">🗄️</span>
+    <span class="file-name">migrations/20260527025407_58c65ae4.sql</span>
+    <span class="file-lang">SQL</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>ALTER PUBLICATION supabase_realtime ADD TABLE public.menu_items;
+ALTER TABLE public.menu_items REPLICA IDENTITY FULL;</pre>
+  </div>
+</div>
+
+<!-- ── Migration 4: 20260528064349 ───────────────────────────── -->
+<div class="file-card lang-sql">
+  <div class="file-header" onclick="toggle(this)">
+    <span class="file-icon">🗄️</span>
+    <span class="file-name">migrations/20260528064349_0a5f7096.sql</span>
+    <span class="file-lang">SQL</span>
+    <span class="toggle-btn open">▶</span>
+  </div>
+  <div class="file-body">
+    <pre>
+CREATE TABLE public.settings (
+  key text NOT NULL PRIMARY KEY,
+  value jsonb NOT NULL,
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.settings TO anon, authenticated;
+GRANT ALL ON public.settings TO service_role;
+
+ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "settings public all" ON public.settings FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+
+ALTER TABLE public.settings REPLICA IDENTITY FULL;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.settings;
+
+INSERT INTO public.settings (key, value) VALUES (
+  'app',
+  '{"paymentMethods":[{"id":"cbe","name":"Commercial Bank of Ethiopia (CBE)","account":"1000123456789","color":"blue"},{"id":"telebirr","name":"Telebirr","account":"0911 234 567","color":"green"},{"id":"ebirr","name":"E-birr","account":"0922 345 678","color":"orange"}]}'::jsonb
+) ON CONFLICT (key) DO NOTHING;</pre>
+  </div>
+</div>
+
+</div><!-- /.container -->
+
+<script>
+  function toggle(header) {
+    const body = header.nextElementSibling;
+    const btn = header.querySelector('.toggle-btn');
+    body.classList.toggle('collapsed');
+    btn.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
